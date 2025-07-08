@@ -56,6 +56,12 @@ dependencies {
     // Extended Material Icons (for the onboarding screen)
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
 
+
+    //Nav Controller
+    val nav_version = "2.9.1"
+
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+
     // Test dependencies
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

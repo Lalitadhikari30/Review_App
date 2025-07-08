@@ -33,6 +33,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 
 data class OnboardingPage(
@@ -42,7 +44,7 @@ data class OnboardingPage(
 )
 
 @Composable
-fun OnboardingScreen(
+fun OnboardingScreen(navController: NavController,
     onGetStarted: () -> Unit = {}
 ) {
     val pages = listOf(
@@ -83,7 +85,7 @@ fun OnboardingScreen(
                 .padding(24.dp)
         ) {
             // Header
-            OnboardingHeader(
+            OnboardingHeader(navController = navController,
                 currentPage = currentPage,
                 totalPages = pages.size,
                 onPrevious = { if (currentPage > 0) currentPage-- },
@@ -149,6 +151,7 @@ fun OnboardingScreen(
                         currentPage++
                     } else {
                         onGetStarted()
+                        navController.navigate("LOGIN") //Navigate to Login Screen
                     }
                 },
                 modifier = Modifier
@@ -248,7 +251,7 @@ fun OnboardingScreen(
 //    }
 //}
 @Composable
-fun OnboardingHeader(
+fun OnboardingHeader(navController: NavController,
     currentPage: Int,
     totalPages: Int,
     onPrevious: () -> Unit,
@@ -290,7 +293,8 @@ fun OnboardingHeader(
                 color = Color(0xFFE53935),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier
-                    .clickable { onSkip() }
+                    .clickable { onSkip()
+                        navController.navigate("LOGIN")}
                     .padding(8.dp)
             )
         } else {
@@ -608,9 +612,9 @@ fun BottomWaveDecoration() {
             )
     )
 }
-
-@Preview(showBackground = true)
+//
+//@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun OnboardingScreenPreview() {
-    OnboardingScreen()
+    OnboardingScreen(rememberNavController())
 }
