@@ -15,6 +15,8 @@ import com.example.review.Screens.RegisterScreen
 import com.example.review.Screens.VerifyPasswordScreen
 import com.example.reviewapp.Screens.HomeScreen
 import com.example.reviewapp.Screens.ProfileScreen
+import com.example.reviewapp.Screens.ReviewsScreen
+import com.example.reviewapp.Screens.SearchBar
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +46,10 @@ class MainActivity : ComponentActivity() {
                 composable("HOMESCREEN",){
                     HomeScreen(navcontroller)
                 }
+                composable("REVIEWSSCREEN",){
+                    ReviewsScreen(navcontroller)
+                }
+
             } )
             // Use your app theme here or MaterialTheme
 //            MaterialTheme {

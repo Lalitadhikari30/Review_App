@@ -419,11 +419,11 @@ fun BottomNavigation(
                 isSelected = false
             )
 
-//            BottomNavItem(
-//                icon = Icons.Default.Search,
-//                label = "Search",
-//                isSelected = false
-//            )
+            BottomNavItem(
+                icon = Icons.Default.Search,
+                label = "Search",
+                isSelected = false
+            )
 
             BottomNavItem(
                 icon = Icons.Default.Favorite,
