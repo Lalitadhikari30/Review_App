@@ -1,21 +1,15 @@
+//@file:OptIn(ExperimentalMaterial3Api::class)
 @file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.example.reviewapp.Screens
 
-import androidx.compose.material3.ExperimentalMaterial3Api
-
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
@@ -24,400 +18,495 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import com.example.reviewapp.R
 
+data class FeaturedBusiness(
+    val name: String,
+    val category: String,
+    val imageRes: Int?,
+    val backgroundColor: Color
+)
 
+data class Review(
+    val userName: String,
+    val timeAgo: String,
+    val rating: Int,
+    val reviewText: String,
+    val businessName: String,
+    val likeCount: Int,
+    val commentCount: Int,
+    val userImageRes: Int?
+)
+
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun HomeScreen(navController: NavController) {
-    val scrollState = rememberScrollState()
+fun HomeScreen() {
+    // Featured businesses with exact colors from image
+    val featuredBusinesses = listOf(
+        FeaturedBusiness(
+            "Tech Solutions Inc.",
+            "Innovative software development",
+            imageRes = R.drawable.tech_building, // Replace with R.drawable.tech_building when you have the image
+            Color(0xFF2E5266) // Dark blue-grey from building image
+        ),
+        FeaturedBusiness(
+            "The Daily Grind Cafe",
+            "Your daily dose of caffeine",
+            imageRes = R.drawable.cafe_interior, // Replace with R.drawable.cafe_interior when you have the image
+            Color(0xFFD4A574) // Warm brown from cafe image
+        ),
+        FeaturedBusiness(
+            "Le Gourmet Bistro",
+            "Fine dining experience",
+            imageRes = R.drawable.restaurant, // Replace with R.drawable.restaurant when you have the image
+            Color(0xFF8B9A6B) // Green from restaurant image
+        )
+    )
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        Column(
+    val reviews = listOf(
+        Review(
+            userName = "Ethan Carter",
+            timeAgo = "2 weeks ago",
+            rating = 5,
+            reviewText = "Tech Solutions Inc. transformed our workflow with their cutting-edge software. Highly recommend!",
+            businessName = "Tech Solutions Inc.",
+            likeCount = 12,
+            commentCount = 2,
+            userImageRes = R.drawable.user1
+        ),
+        Review(
+            userName = "Sophia Bennett",
+            timeAgo = "1 month ago",
+            rating = 4,
+            reviewText = "The Daily Grind Cafe is my go-to spot for a quick coffee break. Great atmosphere.",
+            businessName = "The Daily Grind Cafe",
+            likeCount = 8,
+            commentCount = 1,
+            userImageRes = R.drawable.user2
+        ),
+        Review(
+            userName = "Liam Davis",
+            timeAgo = "2 months ago",
+            rating = 5,
+            reviewText = "Le Gourmet Bistro offers an exquisite culinary journey. The service is impeccable.",
+            businessName = "Le Gourmet Bistro",
+            likeCount = 15,
+            commentCount = 3,
+            userImageRes = R.drawable.user3
+        )
+    )
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Explore",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.Black
+                        )
+                        IconButton(onClick = { /* Handle add click */ }) {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = "Add",
+                                tint = Color.Red
+                            )
+                        }
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White
+                )
+            )
+        },
+        bottomBar = {
+            BottomNavigationBar()
+        },
+        containerColor = Color.White
+    ) { paddingValues ->
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(bottom = 80.dp)
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
-            HomeHeader()
-            SearchBar()
-            PopularReviewsSection()
-            BrowseCategoriesSection()
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Search Bar
+                businessSearchBar()
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Featured Businesses Title
+                Text(
+                    text = "Featured Businesses",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+
+                // Featured Businesses Row
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(bottom = 24.dp)
+                ) {
+                    items(featuredBusinesses) { business ->
+                        FeaturedBusinessCard(business)
+                    }
+                }
+
+                // Recent Testimonials Title
+                Text(
+                    text = "Recent Testimonials",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Black,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+            }
+
+            items(reviews) { review ->
+                ReviewCard(review)
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
-
-        AppBottomNavigation(
-            modifier = Modifier.align(Alignment.BottomCenter),
-            onProfileClick = { navController.navigate("ProfileScreen") }
-        )
-    }
-}
-
-
-@Composable
-fun HomeHeader() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "Reviews",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF1F2937) // gray-800
-        )
-
-//        IconButton(
-//            onClick = { },
-//            modifier = Modifier
-//                .background(
-//                    color = Color(0xFFF9FAFB), // gray-50
-//                    shape = CircleShape
-//                )
-//                .size(40.dp)
-//        ) {
-//            Icon(
-//                imageVector = Icons.Default.Settings,
-//                contentDescription = "Settings",
-//                tint = Color(0xFF6B7280) // gray-500
-//            )
-//        }
     }
 }
 
 @Composable
-fun SearchBar() {
-    var searchText by remember { mutableStateOf("") }
-
+fun businessSearchBar() {
     OutlinedTextField(
-        value = searchText,
-        onValueChange = { searchText = it },
+        value = "",
+        onValueChange = { },
         placeholder = {
             Text(
-                text = "Search for businesses",
-                color = Color(0xFF9CA3AF) // gray-400
+                "Search for a business",
+                color = Color.Gray,
+                fontSize = 14.sp
             )
         },
         leadingIcon = {
             Icon(
-                imageVector = Icons.Default.Search,
+                Icons.Default.Search,
                 contentDescription = "Search",
-                tint = Color(0xFF9CA3AF) // gray-400
+                tint = Color.Red
             )
         },
+        modifier = Modifier.fillMaxWidth(),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = Color(0xFFEF4444), // red-500
-            unfocusedBorderColor = Color(0xFFE5E7EB), // gray-200
-            cursorColor = Color(0xFFEF4444), // red-500
-            focusedTextColor = Color(0xFF1F2937), // gray-800
-            unfocusedTextColor = Color(0xFF1F2937) // gray-800
+            focusedBorderColor = Color.Gray.copy(alpha = 0.5f),
+            unfocusedBorderColor = Color.Gray.copy(alpha = 0.3f),
+            focusedContainerColor = Color(0xFFF5F5F5),
+            unfocusedContainerColor = Color(0xFFF5F5F5)
         ),
-        shape = RoundedCornerShape(12.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 8.dp)
+        shape = RoundedCornerShape(8.dp)
     )
 }
 
 @Composable
-fun PopularReviewsSection() {
-    val popularReviews = listOf(
-        ReviewItem(
-            id = 1,
-            title = "Product Review 1",
-            reviewer = "Reviewer 1",
-            color = Color(0xFF4F7942), // Dark green
-            imageIcon = Icons.Default.ShoppingCart
-        ),
-        ReviewItem(
-            id = 2,
-            title = "Business Review 1",
-            reviewer = "Reviewer 2",
-            color = Color(0xFF374151), // Dark gray
-            imageIcon = Icons.Default.Business
-        ),
-        ReviewItem(
-            id = 3,
-            title = "Other Review 1",
-            reviewer = "Reviewer 3",
-            color = Color(0xFFEA580C), // Orange
-            imageIcon = Icons.Default.Star
-        )
-    )
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp)
-    ) {
-        Text(
-            text = "Popular Reviews",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF1F2937), // gray-800
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-        )
-
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(popularReviews) { review ->
-                PopularReviewCard(review = review)
-            }
-        }
-    }
-}
-
-@Composable
-fun PopularReviewCard(review: ReviewItem) {
+fun FeaturedBusinessCard(business: FeaturedBusiness) {
     Card(
         modifier = Modifier
-            .width(140.dp)
-            .height(180.dp)
-            .clickable { },
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        shape = RoundedCornerShape(12.dp)
+            .width(180.dp)
+            .height(110.dp),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(business.backgroundColor)
         ) {
-            // Image placeholder
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .background(
-                        color = review.color,
-                        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = review.imageIcon,
-                    contentDescription = review.title,
-                    tint = Color.White,
-                    modifier = Modifier.size(40.dp)
+            // Placeholder for actual images
+            if (business.imageRes != null) {
+                Image(
+                    painter = painterResource(id = business.imageRes),
+                    contentDescription = business.name,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+                // Dark overlay for text readability
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.2f))
                 )
             }
 
-            // Content
+
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp)
+                    .fillMaxSize()
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.Bottom
             ) {
                 Text(
-                    text = review.title,
-                    fontSize = 14.sp,
+                    text = business.name,
+                    fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF1F2937), // gray-800
+                    color = Color.White,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-//                Text(
-//                    text = review.reviewer,
-//                    fontSize = 12.sp,
-//                    color = Color(0xFF6B7280), // gray-500
-//                    maxLines = 1,
-//                    overflow = TextOverflow.Ellipsis
-//                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = business.category,
+                    fontSize = 11.sp,
+                    color = Color.White.copy(alpha = 0.9f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }
 }
 
 @Composable
-fun BrowseCategoriesSection() {
-    val categories = listOf(
-        CategoryItem("Products", Icons.Default.ShoppingBag, Color(0xFFEF4444)),
-        CategoryItem("Restaurants", Icons.Default.Restaurant, Color(0xFFF59E0B)),
-        CategoryItem("Services", Icons.Default.Build, Color(0xFF10B981)),
-        CategoryItem("Entertainment", Icons.Default.Movie, Color(0xFF8B5CF6)),
-        CategoryItem("Technology", Icons.Default.Computer, Color(0xFF06B6D4)),
-        CategoryItem("Health", Icons.Default.LocalHospital, Color(0xFFEC4899)),
-        CategoryItem("Education", Icons.Default.School, Color(0xFF84CC16)),
-        CategoryItem("Travel", Icons.Default.Flight, Color(0xFFF97316))
-    )
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 24.dp)
-    ) {
-        Text(
-            text = "Browse Categories",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF1F2937), // gray-800
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-        )
-
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.height(400.dp)
-        ) {
-            items(categories) { category ->
-                CategoryCard(category = category)
-            }
-        }
-    }
-}
-
-@Composable
-fun CategoryCard(category: com.example.reviewapp.Screens.CategoryItem) {
+fun ReviewCard(review: Review) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-            .clickable { },
+        modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(12.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        shape = RoundedCornerShape(0.dp)
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(
-                        color = category.color.copy(alpha = 0.1f),
-                        shape = CircleShape
-                    ),
-                contentAlignment = Alignment.Center
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = category.icon,
-                    contentDescription = category.name,
-                    tint = category.color,
-                    modifier = Modifier.size(24.dp)
-                )
+                // User Avatar
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFE8E8E8)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (review.userImageRes != null) {
+                        Image(
+                            painter = painterResource(id = review.userImageRes),
+                            contentDescription = "User avatar",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Text(
+                            text = review.userName.first().toString(),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color.Gray
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = review.userName,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black
+                    )
+                    Text(
+                        text = review.timeAgo,
+                        fontSize = 12.sp,
+                        color = Color.Red
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Rating Stars
+            Row(
+                modifier = Modifier.padding(start = 52.dp)
+            ) {
+                repeat(5) { index ->
+                    Icon(
+                        imageVector = if (index < review.rating) Icons.Filled.Star else Icons.Outlined.Star,
+                        contentDescription = null,
+                        tint = if (index < review.rating) Color(0xFFFF6B6B) else Color.Gray.copy(alpha = 0.4f),
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Review Text
             Text(
-                text = category.name,
+                text = review.reviewText,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color(0xFF1F2937), // gray-800
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                color = Color.Black,
+                lineHeight = 18.sp,
+                modifier = Modifier.padding(start = 52.dp, end = 8.dp)
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Action buttons
+            Row(
+                modifier = Modifier.padding(start = 52.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Like button
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.ThumbUp,
+                        contentDescription = "Like",
+                        tint = Color.Red,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = review.likeCount.toString(),
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                // Comment button
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.ChatBubbleOutline,
+                        contentDescription = "Comment",
+                        tint = Color.Red,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = review.commentCount.toString(),
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-fun AppBottomNavigation(
-    modifier: Modifier = Modifier,
-    onProfileClick: () -> Unit
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        shape = RoundedCornerShape(0.dp)
+fun BottomNavigationBar() {
+    var selectedItem by remember { mutableStateOf(0) }
+
+    NavigationBar(
+        containerColor = Color.White,
+        tonalElevation = 8.dp,
+        modifier = Modifier.height(65.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            AppBottomNavigationItem(
-                icon = Icons.Default.Home,
-                label = "Home",
-                isSelected = true,
-                onClick = {}
+        // Home
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    imageVector = if (selectedItem == 0) Icons.Filled.Home else Icons.Outlined.Home,
+                    contentDescription = "Home",
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            label = {
+                Text(
+                    "Home",
+                    fontSize = 12.sp
+                )
+            },
+            selected = selectedItem == 0,
+            onClick = { selectedItem = 0 },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color.Red,
+                unselectedIconColor = Color.Gray,
+                selectedTextColor = Color.Red,
+                unselectedTextColor = Color.Gray
             )
-            AppBottomNavigationItem(
-                icon = Icons.Default.Search,
-                label = "Search",
-                isSelected = false,
-                onClick = {}
+        )
+
+        // Search
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    imageVector = if (selectedItem == 1) Icons.Filled.RateReview else Icons.Outlined.RateReview,
+                    contentDescription = "MyReviews",
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            label = {
+                Text(
+                    "My Reviews",
+                    fontSize = 12.sp
+                )
+            },
+            selected = selectedItem == 1,
+            onClick = { selectedItem = 1 },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color.Red,
+                unselectedIconColor = Color.Gray,
+                selectedTextColor = Color.Red,
+                unselectedTextColor = Color.Gray
             )
-            AppBottomNavigationItem(
-                icon = Icons.Default.Favorite,
-                label = "Favorites",
-                isSelected = false,
-                onClick = {}
+        )
+
+
+        // Profile
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    imageVector = if (selectedItem == 3) Icons.Filled.Person else Icons.Outlined.Person,
+                    contentDescription = "Profile",
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            label = {
+                Text(
+                    "Profile",
+                    fontSize = 12.sp
+                )
+            },
+            selected = selectedItem == 3,
+            onClick = { selectedItem = 3 },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color.Red,
+                unselectedIconColor = Color.Gray,
+                selectedTextColor = Color.Red,
+                unselectedTextColor = Color.Gray
             )
-            AppBottomNavigationItem(
-                icon = Icons.Default.Person,
-                label = "Profile",
-                isSelected = false,
-                onClick = onProfileClick
-            )
-        }
+        )
     }
 }
 
 
 @Composable
-fun AppBottomNavigationItem(
-    icon: ImageVector,
-    label: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable { onClick() }
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = label,
-            tint = if (isSelected) Color(0xFFEF4444) else Color(0xFF9CA3AF),
-            modifier = Modifier.size(20.dp)
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = label,
-            fontSize = 10.sp,
-            color = if (isSelected) Color(0xFFEF4444) else Color(0xFF6B7280)
-        )
+fun ReviewsScreenPreview() {
+    MaterialTheme {
+        HomeScreen()
     }
 }
 
 
-data class ReviewItem(
-    val id: Int,
-    val title: String,
-    val reviewer: String,
-    val color: Color,
-    val imageIcon: ImageVector
-)
-
-data class CategoryItem(
-    val name: String,
-    val icon: ImageVector,
-    val color: Color
-)
