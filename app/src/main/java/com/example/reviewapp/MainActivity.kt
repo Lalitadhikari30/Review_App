@@ -13,9 +13,11 @@ import com.example.review.Screens.ForgotPasswordScreen
 import com.example.review.Screens.LoginScreen
 import com.example.review.Screens.RegisterScreen
 import com.example.review.Screens.VerifyPasswordScreen
+import com.example.reviewapp.Screens.EditProfileScreen
+import com.example.reviewapp.Screens.HelpCenterScreen
 import com.example.reviewapp.Screens.HomeScreen
 import com.example.reviewapp.Screens.ProfileScreen
-
+import com.example.reviewapp.Screens.SettingsScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,15 +42,29 @@ class MainActivity : ComponentActivity() {
                     RegisterScreen(navcontroller)
                 }
                 composable("PROFILESCREEN",){
-                    ProfileScreen()
+                    ProfileScreen(navcontroller)
+                }
+                composable("EDITPROFILESCREEN",){
+                    EditProfileScreen()
+                }
+                composable("HELPCENTERSCREEN",){
+                    HelpCenterScreen()
                 }
                 composable("HOMESCREEN",){
-                    HomeScreen()
+                    HomeScreen(navcontroller)
                 }
-
-
-            }
-            )
-    }
+                composable("SETTINGSSCREEN",){
+                    SettingsScreen()
+                }
+            } )
+            // Use your app theme here or MaterialTheme
+//            MaterialTheme {
+//                OnboardingScreen(
+//                    onGetStarted = {
+//                        // TODO: Navigate to next screen (use Navigation or Intent)
+//                    }
+//                )
+//            }
+        }
     }
 }

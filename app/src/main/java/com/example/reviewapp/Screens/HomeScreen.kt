@@ -1,9 +1,11 @@
-//@file:OptIn(ExperimentalMaterial3Api::class)
+
 @file:OptIn(ExperimentalMaterial3Api::class)
 package com.example.reviewapp.Screens
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -19,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.reviewapp.R
 
 data class FeaturedBusiness(
@@ -46,9 +50,9 @@ data class Review(
     val userImageRes: Int?
 )
 
-@Preview(showBackground = true, showSystemUi = true)
+
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     // Featured businesses with exact colors from image
     val featuredBusinesses = listOf(
         FeaturedBusiness(
@@ -134,7 +138,7 @@ fun HomeScreen() {
             )
         },
         bottomBar = {
-            BottomNavigationBar()
+            BottomNavigationBar(navController = navController)
         },
         containerColor = Color.White
     ) { paddingValues ->
@@ -415,97 +419,155 @@ fun ReviewCard(review: Review) {
 }
 
 @Composable
-fun BottomNavigationBar() {
-    var selectedItem by remember { mutableStateOf(0) }
+//fun BottomNavigationBar(navController: NavController) {
+//    var selectedItem by remember { mutableStateOf(0) }
+//
+//    NavigationBar(
+//        containerColor = Color.White,
+//        tonalElevation = 8.dp,
+//        modifier = Modifier.height(65.dp)
+//    ) {
+//        // Home
+//        NavigationBarItem(
+//            icon = {
+//                Icon(
+//                    imageVector = if (selectedItem == 0) Icons.Filled.Home else Icons.Outlined.Home,
+//                    contentDescription = "Home",
+//                    modifier = Modifier.size(24.dp)
+//                )
+//            },
+//            label = {
+//                Text(
+//                    "Home",
+//                    fontSize = 12.sp
+//                )
+//            },
+//            selected = selectedItem == 0,
+//            onClick = { selectedItem = 0 },
+//            colors = NavigationBarItemDefaults.colors(
+//                selectedIconColor = Color.Red,
+//                unselectedIconColor = Color.Gray,
+//                selectedTextColor = Color.Red,
+//                unselectedTextColor = Color.Gray
+//            )
+//        )
+//
+//        // Search
+//        NavigationBarItem(
+//            icon = {
+//                Icon(
+//                    imageVector = if (selectedItem == 1) Icons.Filled.RateReview else Icons.Outlined.RateReview,
+//                    contentDescription = "MyReviews",
+//                    modifier = Modifier.size(24.dp)
+//                )
+//            },
+//            label = {
+//                Text(
+//                    "My Reviews",
+//                    fontSize = 12.sp
+//                )
+//            },
+//            selected = selectedItem == 1,
+//            onClick = { selectedItem = 1 },
+//            colors = NavigationBarItemDefaults.colors(
+//                selectedIconColor = Color.Red,
+//                unselectedIconColor = Color.Gray,
+//                selectedTextColor = Color.Red,
+//                unselectedTextColor = Color.Gray
+//            )
+//        )
+//
+//
+//        // Profile
+//        NavigationBarItem(
+//            icon = {
+//                Icon(
+//                    imageVector = if (selectedItem == 3) Icons.Filled.Person else Icons.Outlined.Person,
+//                    contentDescription = "Profile",
+//                    modifier = Modifier.size(24.dp)
+//                )
+//            },
+//            label = {
+//                Text(
+//                    "Profile",
+//                    fontSize = 12.sp
+//                )
+//            },
+//            selected = selectedItem == 3,
+//            onClick = { navController.navigate("PROFILESCREEN") },
+//            colors = NavigationBarItemDefaults.colors(
+//                selectedIconColor = Color.Red,
+//                unselectedIconColor = Color.Gray,
+//                selectedTextColor = Color.Red,
+//                unselectedTextColor = Color.Gray
+//            )
+//        )
+//    }
+//}
 
-    NavigationBar(
-        containerColor = Color.White,
-        tonalElevation = 8.dp,
-        modifier = Modifier.height(65.dp)
+
+fun BottomNavigationBar(navController: NavController) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        shape = RoundedCornerShape(0.dp)
     ) {
-        // Home
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    imageVector = if (selectedItem == 0) Icons.Filled.Home else Icons.Outlined.Home,
-                    contentDescription = "Home",
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            label = {
-                Text(
-                    "Home",
-                    fontSize = 12.sp
-                )
-            },
-            selected = selectedItem == 0,
-            onClick = { selectedItem = 0 },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.Red,
-                unselectedIconColor = Color.Gray,
-                selectedTextColor = Color.Red,
-                unselectedTextColor = Color.Gray
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            BottomNavItem(
+                icon = Icons.Default.Home,
+                label = "Home",
+                isSelected = true,
+                onClick = { /* Already on Home screen */ }
             )
-        )
 
-        // Search
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    imageVector = if (selectedItem == 1) Icons.Filled.RateReview else Icons.Outlined.RateReview,
-                    contentDescription = "MyReviews",
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            label = {
-                Text(
-                    "My Reviews",
-                    fontSize = 12.sp
-                )
-            },
-            selected = selectedItem == 1,
-            onClick = { selectedItem = 1 },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.Red,
-                unselectedIconColor = Color.Gray,
-                selectedTextColor = Color.Red,
-                unselectedTextColor = Color.Gray
+            BottomNavItem(
+                icon = Icons.Default.RateReview,
+                label = "My Reviews",
+                isSelected = false,
+                onClick = { navController.navigate("reviews") }
             )
-        )
 
-
-        // Profile
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    imageVector = if (selectedItem == 3) Icons.Filled.Person else Icons.Outlined.Person,
-                    contentDescription = "Profile",
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            label = {
-                Text(
-                    "Profile",
-                    fontSize = 12.sp
-                )
-            },
-            selected = selectedItem == 3,
-            onClick = { selectedItem = 3 },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.Red,
-                unselectedIconColor = Color.Gray,
-                selectedTextColor = Color.Red,
-                unselectedTextColor = Color.Gray
+            BottomNavItem(
+                icon = Icons.Default.Person,
+                label = "Profile",
+                isSelected = false,
+                onClick = { navController.navigate("PROFILESCREEN") }
             )
-        )
+        }
     }
 }
 
-
 @Composable
-fun ReviewsScreenPreview() {
-    MaterialTheme {
-        HomeScreen()
+private fun BottomNavItem(
+    icon: ImageVector,
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable(onClick = onClick)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = label,
+            tint = if (isSelected) Color(0xFFEF4444) else Color(0xFF9CA3AF),
+            modifier = Modifier.size(20.dp)
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = label,
+            fontSize = 10.sp,
+            color = if (isSelected) Color(0xFFEF4444) else Color(0xFF6B7280)
+        )
     }
 }
 

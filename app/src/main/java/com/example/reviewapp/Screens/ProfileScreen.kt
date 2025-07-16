@@ -22,10 +22,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
-@Preview
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(navController: NavController) {
     val scrollState = rememberScrollState()
 
     Box(
@@ -41,12 +41,8 @@ fun ProfileScreen() {
         ) {
             // Header Section
             ProfileHeader()
+            MenuOptionsSection(navController)
 
-            // Contact Section
-            ContactSection()
-
-            // Testimonials Section
-            TestimonialsSection()
         }
 
         // Bottom Navigation
@@ -71,29 +67,11 @@ fun ProfileHeader() {
             )
             .padding(24.dp)
     ) {
-        // Settings/Edit Icon
-        IconButton(
-            onClick = { },
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .background(
-                    color = Color.White,
-                    shape = CircleShape
-                )
-                .size(40.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = "Edit Profile",
-                tint = Color(0xFFEF4444) // red-500
-            )
-        }
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Profile Picture
             Box(
@@ -135,204 +113,128 @@ fun ProfileHeader() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Name and Email
+            // Name
             Text(
-                text = "The Cozy Corner",
+                text = "Jonathan Smith",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF1F2937) // gray-800
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}
 
-            Text(
-                text = "CozyCorner@gmail.com",
-                fontSize = 14.sp,
-                color = Color(0xFF6B7280) // gray-600
-            )
+@Composable
+fun MenuOptionsSection(navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 16.dp)
+    ) {
+        MenuOption(
+            icon = Icons.Default.Edit,
+            title = "Edit Profile",
+            onClick =  {
+                navController.navigate("EDITPROFILESCREEN") // Navigate to Edit Profile Screen
+            }
+        )
 
-            Spacer(modifier = Modifier.height(16.dp))
+//        MenuOption(
+//            icon = Icons.Default.CreditCard,
+//            title = "Payment Methods",
+//            onClick = { }
+//        )
 
-            // Edit Profile Button
-            Button(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFEF4444) // red-500
-                ),
-                shape = RoundedCornerShape(24.dp),
-                modifier = Modifier.height(40.dp)
+//        MenuOption(
+//            icon = Icons.Default.Favorite,
+//            title = "Favourites",
+//            onClick = { }
+//        )
+
+//        MenuOption(
+//            icon = Icons.Default.Receipt,
+//            title = "Transactions",
+//            onClick = { }
+//        )
+
+        MenuOption(
+            icon = Icons.Default.Help,
+            title = "Help Center",
+            onClick = {
+                navController.navigate("HELPCENTERSCREEN")
+            }
+        )
+
+        MenuOption(
+            icon = Icons.Default.Settings,
+            title = "Settings",
+            onClick = {
+                navController.navigate("SETTINGSSCREEN")
+            }
+        )
+
+        MenuOption(
+            icon = Icons.Default.ExitToApp,
+            title = "Logout",
+            onClick = { }
+        )
+    }
+}
+
+@Composable
+fun MenuOption(
+    icon: ImageVector,
+    title: String,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        shape = RoundedCornerShape(12.dp),
+        onClick = onClick
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(
+                        color = Color(0xFFFEF2F2), // red-50
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Edit Profile",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.White
+                Icon(
+                    imageVector = icon,
+                    contentDescription = title,
+                    tint = Color(0xFFEF4444), // red-500
+                    modifier = Modifier.size(20.dp)
                 )
             }
-        }
-    }
-}
 
-@Composable
-fun ContactSection() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(24.dp)
-    ) {
-        Text(
-            text = "Contact",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = Color(0xFF1F2937), // gray-800
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+            Spacer(modifier = Modifier.width(16.dp))
 
-        ContactItem(
-            icon = Icons.Default.Phone,
-            label = "Phone",
-            value = "+1(555)123-4567"
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        ContactItem(
-            icon = Icons.Default.LocationOn,
-            label = "Address",
-            value = "123 Main St, Anytown, USA"
-        )
-    }
-}
-
-@Composable
-fun ContactItem(
-    icon: ImageVector,
-    label: String,
-    value: String
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .background(
-                    color = Color(0xFFFEF2F2), // red-50
-                    shape = CircleShape
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = label,
-                tint = Color(0xFFEF4444), // red-500
-                modifier = Modifier.size(20.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Column {
             Text(
-                text = label,
-                fontSize = 12.sp,
-                color = Color(0xFF6B7280) // gray-500
-            )
-            Text(
-                text = value,
-                fontSize = 14.sp,
+                text = title,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color(0xFF1F2937) // gray-800
+                color = Color(0xFF1F2937), // gray-800
+                modifier = Modifier.weight(1f)
             )
-        }
-    }
-}
 
-@Composable
-fun TestimonialsSection() {
-    val ratingData = listOf(
-        RatingItem(5, 70, 87),
-        RatingItem(4, 20, 25),
-        RatingItem(3, 5, 6),
-        RatingItem(2, 3, 4),
-        RatingItem(1, 2, 3)
-    )
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xFFF9FAFB)) // gray-50
-            .padding(24.dp)
-    ) {
-        Text(
-            text = "Testimonials",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = Color(0xFF1F2937), // gray-800
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp)
-            ) {
-                // Overall Rating
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 24.dp)
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "4.8",
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1F2937) // gray-800
-                        )
-
-                        StarRating(rating = 4.8f)
-
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        Text(
-                            text = "125 reviews",
-                            fontSize = 12.sp,
-                            color = Color(0xFF6B7280) // gray-500
-                        )
-                    }
-                }
-
-                // Rating Breakdown
-                ratingData.forEach { item ->
-                    RatingBar(
-                        stars = item.stars,
-                        percentage = item.percentage,
-                        count = item.count
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun StarRating(rating: Float) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-        repeat(5) { index ->
             Icon(
-                imageVector = if (index < rating.toInt()) Icons.Default.Star else Icons.Outlined.Star,
-                contentDescription = "Star ${index + 1}",
-                tint = if (index < rating.toInt()) Color(0xFFFBBF24) else Color(0xFFD1D5DB), // yellow-400 or gray-300
+                imageVector = Icons.Default.ArrowForward,
+                contentDescription = "Arrow",
+                tint = Color(0xFF9CA3AF), // gray-400
                 modifier = Modifier.size(16.dp)
             )
         }
@@ -340,66 +242,9 @@ fun StarRating(rating: Float) {
 }
 
 @Composable
-fun RatingBar(
-    stars: Int,
-    percentage: Int,
-    count: Int
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = stars.toString(),
-            fontSize = 12.sp,
-            color = Color(0xFF6B7280), // gray-600
-            modifier = Modifier.width(16.dp)
-        )
-
-        Icon(
-            imageVector = Icons.Default.Star,
-            contentDescription = "Star",
-            tint = Color(0xFFFBBF24), // yellow-400
-            modifier = Modifier.size(16.dp)
-        )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(8.dp)
-                .background(
-                    color = Color(0xFFE5E7EB), // gray-200
-                    shape = RoundedCornerShape(4.dp)
-                )
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth(percentage / 100f)
-                    .background(
-                        color = Color(0xFFEF4444), // red-500
-                        shape = RoundedCornerShape(4.dp)
-                    )
-            )
-        }
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Text(
-            text = "$percentage%",
-            fontSize = 12.sp,
-            color = Color(0xFF6B7280), // gray-500
-            modifier = Modifier.width(32.dp),
-            textAlign = TextAlign.End
-        )
-    }
-}
-
-@Composable
 fun BottomNavigation(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -419,15 +264,15 @@ fun BottomNavigation(
                 isSelected = false
             )
 
-            BottomNavItem(
-                icon = Icons.Default.Search,
-                label = "Search",
-                isSelected = false
-            )
+//            BottomNavItem(
+//                icon = Icons.Default.Search,
+//                label = "Search",
+//                isSelected = false
+//            )
 
             BottomNavItem(
-                icon = Icons.Default.Favorite,
-                label = "Favorites",
+                icon = Icons.Default.RateReview,
+                label = "My Reviews",
                 isSelected = false
             )
 
@@ -444,7 +289,8 @@ fun BottomNavigation(
 fun BottomNavItem(
     icon: ImageVector,
     label: String,
-    isSelected: Boolean
+    isSelected: Boolean,
+
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -465,9 +311,3 @@ fun BottomNavItem(
         )
     }
 }
-
-data class RatingItem(
-    val stars: Int,
-    val percentage: Int,
-    val count: Int
-)
