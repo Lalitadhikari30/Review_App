@@ -1,5 +1,6 @@
 package com.example.reviewapp.Screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+
 @Composable
 fun ProfileScreen(navController: NavController) {
     val scrollState = rememberScrollState()
@@ -46,8 +48,11 @@ fun ProfileScreen(navController: NavController) {
         }
 
         // Bottom Navigation
-        BottomNavigation(
-            modifier = Modifier.align(Alignment.BottomCenter)
+        ProfileBottomNavigation(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            onHomeClick = { navController.navigate("HOMESCREEN") },
+            onReviewsClick = { navController.navigate("MYREVIEWSSCREEN") },
+            onProfileClick = { /* Already on Profile, do nothing */ }
         )
     }
 }
@@ -242,9 +247,11 @@ fun MenuOption(
 }
 
 @Composable
-fun BottomNavigation(
+fun ProfileBottomNavigation(
     modifier: Modifier = Modifier,
-
+    onHomeClick: () -> Unit,
+    onReviewsClick: () -> Unit,
+    onProfileClick: () -> Unit
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -258,42 +265,40 @@ fun BottomNavigation(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            BottomNavItem(
+            ProfileBottomNavItem(
                 icon = Icons.Default.Home,
                 label = "Home",
-                isSelected = false
+                isSelected = false,
+                onClick = onHomeClick
             )
 
-//            BottomNavItem(
-//                icon = Icons.Default.Search,
-//                label = "Search",
-//                isSelected = false
-//            )
-
-            BottomNavItem(
+            ProfileBottomNavItem(
                 icon = Icons.Default.RateReview,
                 label = "My Reviews",
-                isSelected = false
+                isSelected = false,
+                onClick = onReviewsClick
             )
 
-            BottomNavItem(
+            ProfileBottomNavItem(
                 icon = Icons.Default.Person,
                 label = "Profile",
-                isSelected = true
+                isSelected = true,
+                onClick = onProfileClick
             )
         }
     }
 }
 
 @Composable
-fun BottomNavItem(
+fun ProfileBottomNavItem(
     icon: ImageVector,
     label: String,
     isSelected: Boolean,
-
+    onClick: () -> Unit
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable { onClick() }
     ) {
         Icon(
             imageVector = icon,

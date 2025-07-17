@@ -530,7 +530,7 @@ fun BottomNavigationBar(navController: NavController) {
                 icon = Icons.Default.RateReview,
                 label = "My Reviews",
                 isSelected = false,
-                onClick = { navController.navigate("reviews") }
+                onClick = { navController.navigate("MYREVIEWSSCREEN") }
             )
 
             BottomNavItem(

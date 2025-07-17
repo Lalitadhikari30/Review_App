@@ -56,15 +56,13 @@ class MainActivity : ComponentActivity() {
                 composable("SETTINGSSCREEN",){
                     SettingsScreen()
                 }
-            } )
-            // Use your app theme here or MaterialTheme
-//            MaterialTheme {
-//                OnboardingScreen(
-//                    onGetStarted = {
-//                        // TODO: Navigate to next screen (use Navigation or Intent)
-//                    }
-//                )
-//            }
+                composable("MYREVIEWSSCREEN",){
+                    MyReviewsScreen(navcontroller)
+                }
+
+            }
+            )
+
         }
     }
 }
