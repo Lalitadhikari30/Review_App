@@ -202,7 +202,8 @@ fun LoginScreen(navController: NavController) {
             // Login button
             Button(
                 onClick = {
-                    isLoading = true
+//                    navController.navigate("HOMESCREEN")
+//                    isLoading = true
                     // Simulate login process
                     // Handle login logic here
                 },

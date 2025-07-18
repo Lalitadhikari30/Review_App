@@ -183,7 +183,9 @@ fun MenuOptionsSection(navController: NavController) {
         MenuOption(
             icon = Icons.Default.ExitToApp,
             title = "Logout",
-            onClick = { }
+            onClick = {
+                navController.navigate("HomeScreen")
+            }
         )
     }
 }

@@ -18,6 +18,7 @@ import com.example.reviewapp.Screens.HelpCenterScreen
 import com.example.reviewapp.Screens.HomeScreen
 import com.example.reviewapp.Screens.ProfileScreen
 import com.example.reviewapp.Screens.SettingsScreen
+import com.example.reviewsapp.MyReviewsScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navcontroller=rememberNavController()
-            NavHost(navController = navcontroller, startDestination = "HOMESCREEN", builder={
+            NavHost(navController = navcontroller, startDestination = "ONBOARDINGSCREEN", builder={
                 composable("ONBOARDINGSCREEN",){
                     OnboardingScreen(navcontroller)
                 }
@@ -57,7 +58,7 @@ class MainActivity : ComponentActivity() {
                     SettingsScreen()
                 }
                 composable("MYREVIEWSSCREEN",){
-                    MyReviewsScreen(navcontroller)
+                    MyReviewsScreen(navController = navcontroller)
                 }
 
             }
