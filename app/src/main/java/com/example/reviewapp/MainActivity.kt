@@ -13,12 +13,15 @@ import com.example.review.Screens.ForgotPasswordScreen
 import com.example.review.Screens.LoginScreen
 import com.example.review.Screens.RegisterScreen
 import com.example.review.Screens.VerifyPasswordScreen
+import com.example.reviewapp.Screens.AskForReview
 import com.example.reviewapp.Screens.EditProfileScreen
+import com.example.reviewapp.Screens.GiveReview
 import com.example.reviewapp.Screens.HelpCenterScreen
 import com.example.reviewapp.Screens.HomeScreen
 import com.example.reviewapp.Screens.ProfileScreen
 import com.example.reviewapp.Screens.SettingsScreen
 import com.example.reviewsapp.MyReviewsScreen
+import com.example.reviewsapp.Screen.QueryScreen.QueryScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +29,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navcontroller=rememberNavController()
-            NavHost(navController = navcontroller, startDestination = "ONBOARDINGSCREEN", builder={
+            NavHost(navController = navcontroller, startDestination = "HOMESCREEN", builder={
                 composable("ONBOARDINGSCREEN",){
                     OnboardingScreen(navcontroller)
                 }
@@ -49,7 +52,7 @@ class MainActivity : ComponentActivity() {
                     EditProfileScreen()
                 }
                 composable("HELPCENTERSCREEN",){
-                    HelpCenterScreen()
+                    HelpCenterScreen(navcontroller)
                 }
                 composable("HOMESCREEN",){
                     HomeScreen(navcontroller)
@@ -59,6 +62,15 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("MYREVIEWSSCREEN",){
                     MyReviewsScreen(navController = navcontroller)
+                }
+                composable("QUERYSCREEN",){
+                    QueryScreen()
+                }
+                composable("ASKFORREVIEW",){
+                    AskForReview(navcontroller)
+                }
+                composable("GIVEREVIEW",){
+                    GiveReview(navcontroller)
                 }
 
             }

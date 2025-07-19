@@ -130,12 +130,12 @@ fun SettingsScreen(
                             subtitle = "Manage your notification preferences",
                             onClick = { onSettingClick("notifications") }
                         ),
-                        SettingsItem(
-                            icon = Icons.Default.Security,
-                            title = "Privacy",
-                            subtitle = "Control your privacy settings",
-                            onClick = { onSettingClick("privacy") }
-                        )
+//                        SettingsItem(
+//                            icon = Icons.Default.Security,
+//                            title = "Privacy",
+//                            subtitle = "Control your privacy settings",
+//                            onClick = { onSettingClick("privacy") }
+//                        )
                     ),
                     cardColor = cardColor,
                     textPrimary = textPrimary,
@@ -148,13 +148,13 @@ fun SettingsScreen(
                 SettingsSection(
                     title = "SUPPORT",
                     items = listOf(
-                        SettingsItem(
-                            icon = Icons.Default.Download,
-                            title = "App Version",
-                            subtitle = "2.1.4",
-                            hasArrow = false,
-                            onClick = { }
-                        ),
+//                        SettingsItem(
+//                            icon = Icons.Default.Download,
+//                            title = "App Version",
+//                            subtitle = "2.1.4",
+//                            hasArrow = false,
+//                            onClick = { }
+//                        ),
                         SettingsItem(
                             icon = Icons.Default.HelpCenter,
                             title = "Help & Support",
@@ -187,13 +187,13 @@ fun SettingsScreen(
                             subtitle = "Sign out of your account",
                             onClick = { onSettingClick("sign_out") }
                         ),
-                        SettingsItem(
-                            icon = Icons.Default.Delete,
-                            title = "Delete Account",
-                            subtitle = "Permanently delete your account",
-                            isDestructive = true,
-                            onClick = { onSettingClick("delete_account") }
-                        )
+//                        SettingsItem(
+//                            icon = Icons.Default.Delete,
+//                            title = "Delete Account",
+//                            subtitle = "Permanently delete your account",
+//                            isDestructive = true,
+//                            onClick = { onSettingClick("delete_account") }
+//                        )
                     ),
                     cardColor = cardColor,
                     textPrimary = textPrimary,
