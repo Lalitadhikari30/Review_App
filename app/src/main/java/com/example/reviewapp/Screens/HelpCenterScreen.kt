@@ -21,10 +21,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
-@Preview
+
 @Composable
-fun HelpCenterScreen() {
+fun HelpCenterScreen(navController: NavController) {
     val scrollState = rememberScrollState()
 
     Column(
@@ -43,13 +44,13 @@ fun HelpCenterScreen() {
         RecentActivitySection()
 
         // Browse Topics Section
-        BrowseTopicsSection()
+        BrowseTopicsSection(navController)
 
         // FAQ Section
         FAQSection()
 
-        // Recent Queries Section
-        RecentQueriesSection()
+//        // Recent Queries Section
+//        RecentQueriesSection()
 
         // Contact Section
         ContactSection()
@@ -158,91 +159,90 @@ fun RecentActivitySection() {
             .fillMaxWidth()
             .padding(24.dp)
     ) {
-        Text(
-            text = "NEED HELP WITH RECENT REVIEWS?",
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF6B7280),
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+//        Text(
+//            text = "NEED HELP WITH RECENT REVIEWS?",
+//            fontSize = 12.sp,
+//            fontWeight = FontWeight.Bold,
+//            color = Color(0xFF6B7280),
+//            modifier = Modifier.padding(bottom = 16.dp)
+//        )
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(
-                            color = Color(0xFF10B981),
-                            shape = CircleShape
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "Delivered",
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
+//        Card(
+//            modifier = Modifier.fillMaxWidth(),
+//            colors = CardDefaults.cardColors(containerColor = Color.White),
+//            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+//            shape = RoundedCornerShape(12.dp)
+//        ) {
+//            Row(
+//                modifier = Modifier.padding(16.dp),
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                Box(
+//                    modifier = Modifier
+//                        .size(40.dp)
+//                        .background(
+//                            color = Color(0xFF10B981),
+//                            shape = CircleShape
+//                        ),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Default.CheckCircle,
+//                        contentDescription = "Delivered",
+//                        tint = Color.White,
+//                        modifier = Modifier.size(20.dp)
+//                    )
+//                }
 
-                Spacer(modifier = Modifier.width(16.dp))
+//                Spacer(modifier = Modifier.width(16.dp))
 
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = "Review Posted",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color(0xFF10B981)
-                    )
-                    Text(
-                        text = "On Fri, 23 Aug",
-                        fontSize = 12.sp,
-                        color = Color(0xFF6B7280)
-                    )
+//                Column(
+//                    modifier = Modifier.weight(1f)
+//                ) {
+//                    Text(
+//                        text = "Review Posted",
+//                        fontSize = 14.sp,
+//                        fontWeight = FontWeight.Medium,
+//                        color = Color(0xFF10B981)
+//                    )
+//                    Text(
+//                        text = "On Fri, 23 Aug",
+//                        fontSize = 12.sp,
+//                        color = Color(0xFF6B7280)
+//                    )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+//                    Spacer(modifier = Modifier.height(8.dp))
+//
+//                    Text(
+//                        text = "THE COZY CORNER",
+//                        fontSize = 12.sp,
+//                        fontWeight = FontWeight.Bold,
+//                        color = Color(0xFF1F2937)
+//                    )
+//                    Text(
+//                        text = "Amazing dining experience with great service...",
+//                        fontSize = 12.sp,
+//                        color = Color(0xFF6B7280)
+//                    )
+//                    Text(
+//                        text = "Rating: 5 stars",
+//                        fontSize = 12.sp,
+//                        color = Color(0xFF6B7280)
+//                    )
+//                }
 
-                    Text(
-                        text = "THE COZY CORNER",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1F2937)
-                    )
-                    Text(
-                        text = "Amazing dining experience with great service...",
-                        fontSize = 12.sp,
-                        color = Color(0xFF6B7280)
-                    )
-                    Text(
-                        text = "Rating: 5 stars",
-                        fontSize = 12.sp,
-                        color = Color(0xFF6B7280)
-                    )
-                }
-
-                Icon(
-                    imageVector = Icons.Default.ArrowForward,
-                    contentDescription = "View Details",
-                    tint = Color(0xFF9CA3AF),
-                    modifier = Modifier.size(20.dp)
-                )
+//                Icon(
+//                    imageVector = Icons.Default.ArrowForward,
+//                    contentDescription = "View Details",
+//                    tint = Color(0xFF9CA3AF),
+//                    modifier = Modifier.size(20.dp)
+//                )
             }
         }
-    }
-}
+
 
 @Composable
-fun BrowseTopicsSection() {
+fun BrowseTopicsSection(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -256,18 +256,18 @@ fun BrowseTopicsSection() {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        LazyHelpTopicsGrid()
+        LazyHelpTopicsGrid(navController)
     }
 }
 
 @Composable
-fun LazyHelpTopicsGrid() {
+fun LazyHelpTopicsGrid(navController: NavController) {
     val topics = listOf(
         HelpTopic(Icons.Default.Person, "Account", Color(0xFFFEF2F2)),
         HelpTopic(Icons.Default.SwapHoriz, "Reviews & Ratings", Color(0xFFF0FDF4)),
-        HelpTopic(Icons.Default.Star, "Restaurant Listings", Color(0xFFFFFBEB)),
-        HelpTopic(Icons.Default.LocalOffer, "Offers", Color(0xFFF0F9FF)),
-        HelpTopic(Icons.Default.Payment, "Payments", Color(0xFFF5F3FF)),
+        HelpTopic(Icons.Default.Star, "Business Listings", Color(0xFFFFFBEB)),
+//        HelpTopic(Icons.Default.LocalOffer, "Offers", Color(0xFFF0F9FF)),
+//        HelpTopic(Icons.Default.Payment, "Payments", Color(0xFFF5F3FF)),
         HelpTopic(Icons.Default.Cancel, "Report Issues", Color(0xFFFDF2F8))
     )
 
@@ -282,6 +282,10 @@ fun LazyHelpTopicsGrid() {
                 rowTopics.forEach { topic ->
                     HelpTopicCard(
                         topic = topic,
+                        onTopicClick = {
+                            // Handle topic click, e.g., navigate to a detailed screen
+                            navController.navigate("QUERYSCREEN")
+                        },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -296,6 +300,7 @@ fun LazyHelpTopicsGrid() {
 @Composable
 fun HelpTopicCard(
     topic: HelpTopic,
+    onTopicClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -303,7 +308,8 @@ fun HelpTopicCard(
         colors = CardDefaults.cardColors(containerColor = topic.backgroundColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         shape = RoundedCornerShape(12.dp),
-        onClick = { }
+        onClick = onTopicClick
+
     ) {
         Column(
             modifier = Modifier
@@ -386,49 +392,49 @@ fun FAQItem(question: String) {
     }
 }
 
-@Composable
-fun RecentQueriesSection() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(24.dp)
-    ) {
-        Text(
-            text = "Recent Queries",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF1F2937),
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        Text(
-            text = "There are no recent queries raised in Last 30 Days.",
-            fontSize = 14.sp,
-            color = Color(0xFF6B7280),
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        OutlinedButton(
-            onClick = { },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = Color(0xFF6B7280)
-            ),
-            border = ButtonDefaults.outlinedButtonBorder.copy(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(Color(0xFFD1D5DB), Color(0xFFD1D5DB))
-                )
-            ),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(
-                text = "SHOW OLDER QUERIES",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
-}
+//@Composable
+//fun RecentQueriesSection() {
+//    Column(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(24.dp)
+//    ) {
+//        Text(
+//            text = "Recent Queries",
+//            fontSize = 20.sp,
+//            fontWeight = FontWeight.Bold,
+//            color = Color(0xFF1F2937),
+//            modifier = Modifier.padding(bottom = 16.dp)
+//        )
+//
+//        Text(
+//            text = "There are no recent queries raised in Last 30 Days.",
+//            fontSize = 14.sp,
+//            color = Color(0xFF6B7280),
+//            modifier = Modifier.padding(bottom = 16.dp)
+//        )
+//
+//        OutlinedButton(
+//            onClick = { },
+//            modifier = Modifier.fillMaxWidth(),
+//            colors = ButtonDefaults.outlinedButtonColors(
+//                contentColor = Color(0xFF6B7280)
+//            ),
+//            border = ButtonDefaults.outlinedButtonBorder.copy(
+//                brush = Brush.horizontalGradient(
+//                    colors = listOf(Color(0xFFD1D5DB), Color(0xFFD1D5DB))
+//                )
+//            ),
+//            shape = RoundedCornerShape(8.dp)
+//        ) {
+//            Text(
+//                text = "SHOW OLDER QUERIES",
+//                fontSize = 14.sp,
+//                fontWeight = FontWeight.Medium
+//            )
+//        }
+//    }
+//}
 
 @Composable
 fun ContactSection() {
