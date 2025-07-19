@@ -146,23 +146,6 @@ fun MenuOptionsSection(navController: NavController) {
             }
         )
 
-//        MenuOption(
-//            icon = Icons.Default.CreditCard,
-//            title = "Payment Methods",
-//            onClick = { }
-//        )
-
-//        MenuOption(
-//            icon = Icons.Default.Favorite,
-//            title = "Favourites",
-//            onClick = { }
-//        )
-
-//        MenuOption(
-//            icon = Icons.Default.Receipt,
-//            title = "Transactions",
-//            onClick = { }
-//        )
 
         MenuOption(
             icon = Icons.Default.Help,

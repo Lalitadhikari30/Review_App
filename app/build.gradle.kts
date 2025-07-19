@@ -56,6 +56,7 @@ dependencies {
     // Extended Material Icons (for the onboarding screen)
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
     implementation(libs.car.ui.lib)
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
 
     //Nav Controller
@@ -73,6 +74,5 @@ dependencies {
     // Debug dependencies
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation("io.coil-kt:coil-compose:2.4.0")
 
 }

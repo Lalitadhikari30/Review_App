@@ -13,7 +13,9 @@ import com.example.review.Screens.ForgotPasswordScreen
 import com.example.review.Screens.LoginScreen
 import com.example.review.Screens.RegisterScreen
 import com.example.review.Screens.VerifyPasswordScreen
+import com.example.reviewapp.Screens.AskForReview
 import com.example.reviewapp.Screens.EditProfileScreen
+import com.example.reviewapp.Screens.GiveReview
 import com.example.reviewapp.Screens.HelpCenterScreen
 import com.example.reviewapp.Screens.HomeScreen
 import com.example.reviewapp.Screens.ProfileScreen
@@ -26,7 +28,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navcontroller=rememberNavController()
-            NavHost(navController = navcontroller, startDestination = "ONBOARDINGSCREEN", builder={
+            NavHost(navController = navcontroller, startDestination = "HOMESCREEN", builder={
                 composable("ONBOARDINGSCREEN",){
                     OnboardingScreen(navcontroller)
                 }
@@ -58,7 +60,13 @@ class MainActivity : ComponentActivity() {
                     SettingsScreen()
                 }
                 composable("MYREVIEWSSCREEN",){
-                    MyReviewsScreen(navController = navcontroller)
+                    MyReviewsScreen(navcontroller)
+                }
+                composable("ASKFORREVIEW",){
+                    AskForReview(navcontroller)
+                }
+                composable("GIVEREVIEW",){
+                    GiveReview(navcontroller)
                 }
 
             }

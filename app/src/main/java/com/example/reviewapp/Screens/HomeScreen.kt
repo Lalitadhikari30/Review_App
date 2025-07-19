@@ -2,7 +2,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 package com.example.reviewapp.Screens
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,6 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,28 +50,31 @@ data class Review(
     val userImageRes: Int?
 )
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
     // Featured businesses with exact colors from image
     val featuredBusinesses = listOf(
         FeaturedBusiness(
             "Tech Solutions Inc.",
             "Innovative software development",
-            imageRes = R.drawable.tech_building, // Replace with R.drawable.tech_building when you have the image
-            Color(0xFF2E5266) // Dark blue-grey from building image
+            imageRes = R.drawable.tech_building,
+            Color(0xFF2E5266)
         ),
         FeaturedBusiness(
             "The Daily Grind Cafe",
             "Your daily dose of caffeine",
-            imageRes = R.drawable.cafe_interior, // Replace with R.drawable.cafe_interior when you have the image
-            Color(0xFFD4A574) // Warm brown from cafe image
+            imageRes = R.drawable.cafe_interior,
+            Color(0xFFD4A574)
         ),
         FeaturedBusiness(
             "Le Gourmet Bistro",
             "Fine dining experience",
-            imageRes = R.drawable.restaurant, // Replace with R.drawable.restaurant when you have the image
-            Color(0xFF8B9A6B) // Green from restaurant image
+            imageRes = R.drawable.restaurant,
+            Color(0xFF8B9A6B)
         )
     )
 
@@ -119,16 +122,27 @@ fun HomeScreen(navController: NavController) {
                     ) {
                         Text(
                             text = "Explore",
-                            fontSize = 20.sp,
+                            fontSize = 22.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.Black
                         )
-                        IconButton(onClick = { /* Handle add click */ }) {
-                            Icon(
-                                Icons.Default.Add,
-                                contentDescription = "Add",
-                                tint = Color.Red
-                            )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            IconButton(onClick = { showBottomSheet = true }) {
+                                Icon(
+                                    Icons.Default.Add,
+                                    contentDescription = "Add",
+                                    tint = Color.Red
+                                )
+                            }
+                            IconButton(onClick = { /* Handle notification click */ }) {
+                                Icon(
+                                    Icons.Default.Notifications,
+                                    contentDescription = "Notifications",
+                                    tint = Color.Red
+                                )
+                            }
                         }
                     }
                 },
@@ -192,6 +206,156 @@ fun HomeScreen(navController: NavController) {
             }
         }
     }
+
+    // Bottom Sheet Modal
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            sheetState = bottomSheetState,
+            containerColor = Color.White,
+            contentColor = Color.Black,
+            dragHandle = {
+                Box(
+                    modifier = Modifier
+                        .width(40.dp)
+                        .height(4.dp)
+                        .background(
+                            Color.Gray.copy(alpha = 0.3f),
+                            RoundedCornerShape(2.dp)
+                        )
+                )
+            }
+        ) {
+            AddOptionsBottomSheet(
+                navController = navController,
+                onDismiss = { showBottomSheet = false },
+                onAddReview = {
+                    showBottomSheet = false
+                    // Handle add review navigation
+                },
+                onAddBusiness = {
+                    showBottomSheet = false
+                    // Handle add business navigation
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun AddOptionsBottomSheet(
+    navController: NavController,
+    onDismiss: () -> Unit,
+    onAddReview: () -> Unit,
+    onAddBusiness: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        // Header
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Add New",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black
+            )
+            IconButton(onClick = onDismiss) {
+                Icon(
+                    Icons.Default.Close,
+                    contentDescription = "Close",
+                    tint = Color.Gray
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Add Review Option
+        AddOptionItem(
+            icon = Icons.Default.Reviews,
+            title = "Ask for Review",
+            subtitle = "Loved it? Let us and others know!",
+            onClick = {
+                navController.navigate("ASKFORREVIEW")
+                onDismiss()
+            }
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Add Business Option
+        AddOptionItem(
+            icon = Icons.Default.RateReview,
+            title = "Give Reviews",
+            subtitle = "Leave a review in just a minute!",
+            onClick = {
+                navController.navigate("GIVEREVIEW")
+                onDismiss()
+            }
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+    }
+}
+
+@Composable
+fun AddOptionItem(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(vertical = 12.dp, horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(Color.Red.copy(alpha = 0.1f), CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = title,
+                tint = Color.Red,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
+            )
+            Text(
+                text = subtitle,
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
+        }
+
+        Icon(
+            imageVector = Icons.Default.ArrowForward,
+            contentDescription = "Go",
+            tint = Color.Gray,
+            modifier = Modifier.size(16.dp)
+        )
+    }
 }
 
 @Composable
@@ -254,7 +418,6 @@ fun FeaturedBusinessCard(business: FeaturedBusiness) {
                         .background(Color.Black.copy(alpha = 0.2f))
                 )
             }
-
 
             Column(
                 modifier = Modifier
@@ -419,93 +582,6 @@ fun ReviewCard(review: Review) {
 }
 
 @Composable
-//fun BottomNavigationBar(navController: NavController) {
-//    var selectedItem by remember { mutableStateOf(0) }
-//
-//    NavigationBar(
-//        containerColor = Color.White,
-//        tonalElevation = 8.dp,
-//        modifier = Modifier.height(65.dp)
-//    ) {
-//        // Home
-//        NavigationBarItem(
-//            icon = {
-//                Icon(
-//                    imageVector = if (selectedItem == 0) Icons.Filled.Home else Icons.Outlined.Home,
-//                    contentDescription = "Home",
-//                    modifier = Modifier.size(24.dp)
-//                )
-//            },
-//            label = {
-//                Text(
-//                    "Home",
-//                    fontSize = 12.sp
-//                )
-//            },
-//            selected = selectedItem == 0,
-//            onClick = { selectedItem = 0 },
-//            colors = NavigationBarItemDefaults.colors(
-//                selectedIconColor = Color.Red,
-//                unselectedIconColor = Color.Gray,
-//                selectedTextColor = Color.Red,
-//                unselectedTextColor = Color.Gray
-//            )
-//        )
-//
-//        // Search
-//        NavigationBarItem(
-//            icon = {
-//                Icon(
-//                    imageVector = if (selectedItem == 1) Icons.Filled.RateReview else Icons.Outlined.RateReview,
-//                    contentDescription = "MyReviews",
-//                    modifier = Modifier.size(24.dp)
-//                )
-//            },
-//            label = {
-//                Text(
-//                    "My Reviews",
-//                    fontSize = 12.sp
-//                )
-//            },
-//            selected = selectedItem == 1,
-//            onClick = { selectedItem = 1 },
-//            colors = NavigationBarItemDefaults.colors(
-//                selectedIconColor = Color.Red,
-//                unselectedIconColor = Color.Gray,
-//                selectedTextColor = Color.Red,
-//                unselectedTextColor = Color.Gray
-//            )
-//        )
-//
-//
-//        // Profile
-//        NavigationBarItem(
-//            icon = {
-//                Icon(
-//                    imageVector = if (selectedItem == 3) Icons.Filled.Person else Icons.Outlined.Person,
-//                    contentDescription = "Profile",
-//                    modifier = Modifier.size(24.dp)
-//                )
-//            },
-//            label = {
-//                Text(
-//                    "Profile",
-//                    fontSize = 12.sp
-//                )
-//            },
-//            selected = selectedItem == 3,
-//            onClick = { navController.navigate("PROFILESCREEN") },
-//            colors = NavigationBarItemDefaults.colors(
-//                selectedIconColor = Color.Red,
-//                unselectedIconColor = Color.Gray,
-//                selectedTextColor = Color.Red,
-//                unselectedTextColor = Color.Gray
-//            )
-//        )
-//    }
-//}
-
-
 fun BottomNavigationBar(navController: NavController) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -570,5 +646,3 @@ private fun BottomNavItem(
         )
     }
 }
-
-
