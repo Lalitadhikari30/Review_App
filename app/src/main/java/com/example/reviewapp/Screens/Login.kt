@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.example.review.Screens
+package com.example.reviewapp.Screens
 
 
 import androidx.compose.foundation.Canvas
@@ -36,14 +36,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.reviewapp.AuthViewModel
 import kotlin.math.cos
 import kotlin.math.sin
 
 
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun LoginScreen(navController: NavController) {
-    var username by remember { mutableStateOf("John_doe") }
+fun LoginScreen(modifier: Modifier = Modifier, navController: NavController, authViewModel : AuthViewModel) {
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
@@ -131,52 +132,128 @@ fun LoginScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(40.dp))
 
             // Username field
+//            OutlinedTextField(
+//                value = username,
+//                onValueChange = { username = it },
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(56.dp),
+//                colors = OutlinedTextFieldDefaults.colors(
+//                    focusedBorderColor = Color.Transparent,
+//                    unfocusedBorderColor = Color.Transparent,
+//                    focusedContainerColor = Color(0xFFF5F5F5),
+//                    unfocusedContainerColor = Color(0xFFF5F5F5)
+//                ),
+//                shape = RoundedCornerShape(12.dp),
+//                singleLine = true
+//            )
+            // Email field
+//            OutlinedTextField(
+//                value = email,
+//                onValueChange = { email = it },
+//                label = { Text("Email") },
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(56.dp),
+//                colors = OutlinedTextFieldDefaults.colors(
+//                    focusedBorderColor = Color.Transparent,
+//                    unfocusedBorderColor = Color.Transparent,
+//                    focusedContainerColor = Color(0xFFF5F5F5),
+//                    unfocusedContainerColor = Color(0xFFF5F5F5)
+//                ),
+//                shape = RoundedCornerShape(12.dp),
+//                singleLine = true,
+//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+//            )
+//
+//
+//            Spacer(modifier = Modifier.height(16.dp))
+
             OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
+                value = email,
+                onValueChange = {
+                    email = it
+                },
+                label = { Text("Email Address") },
+                placeholder = { Text("Enter your email") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedContainerColor = Color(0xFFF5F5F5),
-                    unfocusedContainerColor = Color(0xFFF5F5F5)
-                ),
+                    .height( 62.dp),
                 shape = RoundedCornerShape(12.dp),
-                singleLine = true
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFFFF4444),
+                    unfocusedBorderColor = Color.Gray.copy(alpha = 0.3f),
+                    focusedLabelColor = Color(0xFFFF4444),
+                    cursorColor = Color(0xFFFF4444),
+                    unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
+                    focusedContainerColor = Color.White.copy(alpha = 0.9f)
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Password field
+//            OutlinedTextField(
+//                value = password,
+//                onValueChange = { password = it },
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(56.dp),
+//                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+//                trailingIcon = {
+//                    IconButton(
+//                        onClick = { passwordVisible = !passwordVisible }
+//                    ) {
+//                        Icon(
+//                            imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+//                            contentDescription = if (passwordVisible) "Hide password" else "Show password",
+//                            tint = Color.Gray
+//                        )
+//                    }
+//                },
+//                colors = OutlinedTextFieldDefaults.colors(
+//                    focusedBorderColor = Color.Transparent,
+//                    unfocusedBorderColor = Color.Transparent,
+//                    focusedContainerColor = Color(0xFFF5F5F5),
+//                    unfocusedContainerColor = Color(0xFFF5F5F5)
+//                ),
+//                shape = RoundedCornerShape(12.dp),
+//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+//                singleLine = true
+//            )
+//
+//            Spacer(modifier = Modifier.height(16.dp))
+
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
+                onValueChange = {
+                    password = it
+                },
+                label = { Text("Password") },
+                placeholder = { Text("Enter your password") },
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 trailingIcon = {
-                    IconButton(
-                        onClick = { passwordVisible = !passwordVisible }
-                    ) {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
                             imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = if (passwordVisible) "Hide password" else "Show password",
-                            tint = Color.Gray
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password"
                         )
                     }
                 },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedContainerColor = Color(0xFFF5F5F5),
-                    unfocusedContainerColor = Color(0xFFF5F5F5)
-                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(62.dp),
                 shape = RoundedCornerShape(12.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                singleLine = true
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFFFF4444),
+                    unfocusedBorderColor = Color.Gray.copy(alpha = 0.3f),
+                    focusedLabelColor = Color(0xFFFF4444),
+                    cursorColor = Color(0xFFFF4444),
+                    unfocusedContainerColor = Color.White.copy(alpha = 0.8f),
+                    focusedContainerColor = Color.White.copy(alpha = 0.9f)
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -202,11 +279,16 @@ fun LoginScreen(navController: NavController) {
             // Login button
             Button(
                 onClick = {
-//                    navController.navigate("HOMESCREEN")
-//                    isLoading = true
-                    // Simulate login process
-                    // Handle login logic here
-                },
+                    isLoading = true
+                    authViewModel.login(email, password) { success ->
+                    isLoading = false
+                    if (success) {
+                     navController.navigate("HOMESCREEN") {
+                         popUpTo("LOGIN") { inclusive = true } // Optional: prevents back navigation
+            }
+        }
+    }
+},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -227,7 +309,8 @@ fun LoginScreen(navController: NavController) {
                         text = "Login",
                         color = Color.White,
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
+
                     )
                 }
             }

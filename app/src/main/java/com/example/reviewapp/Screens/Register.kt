@@ -1,6 +1,6 @@
 
 @file:OptIn(ExperimentalMaterial3Api::class)
-package com.example.review.Screens
+package com.example.reviewapp.Screens
 
 
 import androidx.compose.foundation.Canvas
@@ -35,15 +35,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.widget.Toast
 import androidx.navigation.NavController
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.reviewapp.AuthState
+import com.example.reviewapp.AuthViewModel
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
+//import np.com.bimalkafle.reviewapp.AuthState
+//import np.com.bimalkafle.firebaseauthdemoapp.AuthViewModel
 //import androidx.navigation.NavController
 
 
 @Composable
 fun RegisterScreen(
-    navController: NavController,
+    modifier: Modifier = Modifier, navController: NavController, authViewModel : AuthViewModel,
     onRegisterSuccess: (String, String, String) -> Unit = { _, _, _ -> },
     onLoginClick: () -> Unit = {}
 ) {
@@ -62,7 +67,19 @@ fun RegisterScreen(
     var isConfirmPasswordValid by remember { mutableStateOf(true) }
 
     val context = LocalContext.current
+    val authState = authViewModel.authState.observeAsState()
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(authState.value) {
+        when (authState.value) {
+            is AuthState.Loading -> isLoading = true
+            is AuthState.Authenticated,
+            is AuthState.Error -> isLoading = false
+            else -> {}
+        }
+    }
+
+
 
     Box(
         modifier = Modifier
@@ -260,7 +277,6 @@ fun RegisterScreen(
             // Sign Up button
             Button(
                 onClick = {
-                    // Validate all fields
                     val isFormValid = validateForm(
                         username = username,
                         email = email,
@@ -274,27 +290,16 @@ fun RegisterScreen(
 
                     if (isFormValid) {
                         isLoading = true
+                        authViewModel.signup(email, password)
 
-                        // Simulate API call
-                        kotlinx.coroutines.MainScope().launch {
-                            kotlinx.coroutines.delay(2000) // Simulate network delay
-                            isLoading = false
-                            onRegisterSuccess(username, email, password)
-                            Toast.makeText(
-                                context,
-                                "Registration successful!",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
+                        // optional feedback (remove if handled via LiveData)
+                        Toast.makeText(context, "Registration successful!", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(
-                            context,
-                            "Please fix the errors above",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(context, "Please fix the errors above", Toast.LENGTH_SHORT).show()
                     }
                 },
-                modifier = Modifier
+
+                        modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(
@@ -315,6 +320,10 @@ fun RegisterScreen(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White
+//                        modifier = Modifier
+//                            .clickable {
+//                                authViewModel.signup(email, password)
+//                            }
                     )
                 }
             }
@@ -474,38 +483,17 @@ fun validateForm(
     return isUsernameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid
 }
 
-fun ValidEmail(email: String): Boolean {
+fun isValidEmail(email: String): Boolean {
     val emailPattern = Pattern.compile(
         "[a-zA-Z0-9+._%-+]{1,256}@[a-zA-Z0-9][a-zA-Z0-9-]{0,64}(\\.[a-zA-Z0-9][a-zA-Z0-9-]{0,25})+"
     )
     return emailPattern.matcher(email).matches()
 }
 
-@Composable
-fun RegisterScreenPreview() {
-    MaterialTheme {
-        RegisterScreen(rememberNavController())
-    }
-}
+//@Composable
+//fun RegisterScreenPreview() {
+//    MaterialTheme {
+//        RegisterScreen(rememberNavController())
+//    }
+//}
 
-// Usage in your Activity/Fragment:
-/*
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            YourAppTheme {
-                RegisterScreen(
-                    onRegisterSuccess = { username, email, password ->
-                        // Handle successful registration
-                        // Navigate to login or main screen
-                    },
-                    onLoginClick = {
-                        // Navigate to login screen
-                    }
-                )
-            }
-        }
-    }
-}
-*/
