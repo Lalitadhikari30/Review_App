@@ -98,22 +98,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-//    fun login(email: String, password: String) {
-//        if (email.isEmpty() || password.isEmpty()) {
-//            _authState.value = AuthState.Error("Email and Password can't be empty")
-//            return
-//        }
-//        _authState.value = AuthState.Loading
-//        auth.signInWithEmailAndPassword(email, password)
-//            .addOnCompleteListener { task ->
-//                if (task.isSuccessful) {
-//                    _authState.value = AuthState.Authenticated
-//                } else {
-//                    _authState.value = AuthState.Error(task.exception?.message ?: "Something went wrong")
-//                }
-//            }
-//    }
-
     fun login(email: String, password: String, onResult: (Boolean) -> Unit) {
         if (email.isEmpty() || password.isEmpty()) {
             _authState.value = AuthState.Error("Email and Password can't be empty")
@@ -153,6 +137,17 @@ class AuthViewModel : ViewModel() {
     fun signout() {
         auth.signOut()
         _authState.value = AuthState.Unauthenticated
+    }
+
+    fun sendPasswordResetEmail(email: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onError(task.exception?.message ?: "Error sending reset email.")
+                }
+            }
     }
 }
 

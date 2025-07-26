@@ -30,6 +30,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
+import com.google.firebase.auth.FirebaseAuth
+
 
 
 //@Preview(showBackground = true, showSystemUi = true)
@@ -212,17 +214,30 @@ fun ForgotPasswordScreen(
 
                     // Simulate API call
                     // In real app, replace with actual API call
-                    kotlinx.coroutines.MainScope().launch {
-                        kotlinx.coroutines.delay(2000) // Simulate network delay
-                        isLoading = false
-                        onPasswordResetSent(email)
-                        Toast.makeText(
-                            context,
-                            "Password reset link sent to $email",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                },
+//                    kotlinx.coroutines.MainScope().launch {
+//                        kotlinx.coroutines.delay(2000) // Simulate network delay
+//                        isLoading = false
+//                        onPasswordResetSent(email)
+//                        Toast.makeText(
+//                            context,
+//                            "Password reset link sent to $email",
+//                            Toast.LENGTH_LONG
+//                        ).show()
+//                    }
+
+                    FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                        .addOnCompleteListener { task ->
+                            isLoading = false
+                            if (task.isSuccessful) {
+                                onPasswordResetSent(email)
+                                Toast.makeText(context, "Password reset link sent to $email", Toast.LENGTH_LONG).show()
+                                navController.popBackStack() // Optional: go back to login
+                            } else {
+                                val error = task.exception?.localizedMessage ?: "Failed to send reset email."
+                                Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+                            }
+                        }
+                          },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -268,26 +283,3 @@ fun ForgotPasswordScreenPreview() {
         ForgotPasswordScreen(rememberNavController())
     }
 }
-
-// Usage in your Activity/Fragment:
-/*
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            YourAppTheme {
-                ForgotPasswordScreen(
-                    onBackPressed = {
-                        // Handle back navigation
-                        finish() // or navigate back
-                    },
-                    onPasswordResetSent = { email ->
-                        // Handle successful password reset request
-                        // Navigate to success screen or show confirmation
-                    }
-                )
-            }
-        }
-    }
-}
-*/
