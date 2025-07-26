@@ -41,9 +41,6 @@ import com.example.reviewapp.AuthState
 import com.example.reviewapp.AuthViewModel
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
-//import np.com.bimalkafle.reviewapp.AuthState
-//import np.com.bimalkafle.firebaseauthdemoapp.AuthViewModel
-//import androidx.navigation.NavController
 
 
 @Composable
@@ -290,7 +287,7 @@ fun RegisterScreen(
 
                     if (isFormValid) {
                         isLoading = true
-                        authViewModel.signup(email, password)
+                        authViewModel.signup(username, email, password)
 
                         // optional feedback (remove if handled via LiveData)
                         Toast.makeText(context, "Registration successful!", Toast.LENGTH_SHORT).show()
@@ -490,10 +487,5 @@ fun isValidEmail(email: String): Boolean {
     return emailPattern.matcher(email).matches()
 }
 
-//@Composable
-//fun RegisterScreenPreview() {
-//    MaterialTheme {
-//        RegisterScreen(rememberNavController())
-//    }
-//}
+
 

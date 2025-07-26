@@ -24,6 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
+
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -210,8 +212,12 @@ fun EnhancedProfileHeader() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Name
+//                Text(
+//                    text = "Jonathan Smith",
+                val currentUser = remember { FirebaseAuth.getInstance().currentUser }
+                val displayName = currentUser?.displayName ?: "Guest User"
                 Text(
-                    text = "Jonathan Smith",
+                    text = displayName,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
