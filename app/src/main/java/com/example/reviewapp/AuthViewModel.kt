@@ -14,17 +14,23 @@ class AuthViewModel : ViewModel() {
     private val _authState = MutableLiveData<AuthState>()
     val authState: LiveData<AuthState> = _authState
 
+    private val _displayName = MutableLiveData<String>()
+    val displayName: LiveData<String> = _displayName
+
+
     init {
         checkAuthStatus()
     }
 
-    fun checkAuthStatus() {
-        if (auth.currentUser == null) {
-            _authState.value = AuthState.Unauthenticated
-        } else {
-            _authState.value = AuthState.Authenticated
-        }
+fun checkAuthStatus() {
+    val currentUser = auth.currentUser
+    if (currentUser == null) {
+        _authState.value = AuthState.Unauthenticated
+    } else {
+        _displayName.value = currentUser.displayName ?: ""
+        _authState.value = AuthState.Authenticated
     }
+}
 
     fun login(email: String, password: String, onResult: (Boolean) -> Unit) {
         if (email.isEmpty() || password.isEmpty()) {
@@ -38,6 +44,8 @@ class AuthViewModel : ViewModel() {
                 if (task.isSuccessful) {
                     _authState.value = AuthState.Authenticated
                     onResult(true)
+                    _displayName.value = auth.currentUser?.displayName ?: ""
+
                 } else {
                     _authState.value = AuthState.Error(task.exception?.message ?: "Something went wrong")
                     onResult(false)
@@ -56,6 +64,7 @@ class AuthViewModel : ViewModel() {
                         ?.addOnCompleteListener { updateTask ->
                             if (updateTask.isSuccessful) {
                                 _authState.value = AuthState.Authenticated
+                                _displayName.value = auth.currentUser?.displayName ?: ""
                             } else {
                                 _authState.value = AuthState.Error("Failed to update profile")
                             }

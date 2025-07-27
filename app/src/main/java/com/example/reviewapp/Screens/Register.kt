@@ -67,14 +67,31 @@ fun RegisterScreen(
     val authState = authViewModel.authState.observeAsState()
     val scrollState = rememberScrollState()
 
+//    LaunchedEffect(authState.value) {
+//        when (authState.value) {
+//            is AuthState.Loading -> isLoading = true
+//            is AuthState.Authenticated,
+//            is AuthState.Error -> isLoading = false
+//            else -> {}
+//        }
+//    }
+
     LaunchedEffect(authState.value) {
-        when (authState.value) {
+        when (val state = authState.value) {
             is AuthState.Loading -> isLoading = true
-            is AuthState.Authenticated,
-            is AuthState.Error -> isLoading = false
+            is AuthState.Authenticated -> {
+                isLoading = false
+                navController.navigate("LOGIN") {
+                    popUpTo(0) // Clear backstack so user can't go back to register
+                }
+            }
+            is AuthState.Error -> {
+                isLoading = false
+            }
             else -> {}
         }
     }
+
 
 
 

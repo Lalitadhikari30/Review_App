@@ -30,6 +30,9 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun ProfileScreen(navController: NavController) {
     val scrollState = rememberScrollState()
+    val user = FirebaseAuth.getInstance().currentUser
+    val displayName = user?.displayName ?: "No Name"
+
 
     Box(
         modifier = Modifier
@@ -43,6 +46,7 @@ fun ProfileScreen(navController: NavController) {
                 .padding(16.dp)
                 .padding(top = 40.dp, bottom = 80.dp) // Added top padding for status bar
         ) {
+
             // Back Button (separate from card)
             Row(
                 modifier = Modifier

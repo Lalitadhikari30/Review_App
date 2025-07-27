@@ -53,9 +53,12 @@ dependencies {
 
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
 
+    implementation ("com.google.firebase:firebase-firestore-ktx:25.1.0")
 
-    // Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+
+//    // Navigation
+//    implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Extended Material Icons (for the onboarding screen)
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
@@ -65,9 +68,12 @@ dependencies {
 
     implementation("androidx.compose.runtime:runtime-livedata:1.8.3")
 
+    implementation ("com.google.firebase:firebase-storage-ktx:21.0.2")
+    implementation(libs.firebase.storage)
+
 
     //Nav Controller
-    val nav_version = "2.9.1"
+    val nav_version = "2.9.2"
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
