@@ -81,10 +81,10 @@ fun RegisterScreen(
             is AuthState.Loading -> isLoading = true
             is AuthState.Authenticated -> {
                 isLoading = false
-                navController.navigate("LOGIN") {
-                    popUpTo(0) // Clear backstack so user can't go back to register
+//                navController.navigate("LOGIN") {
+//                    popUpTo(0) // Clear backstack so user can't go back to register
                 }
-            }
+//            }
             is AuthState.Error -> {
                 isLoading = false
             }

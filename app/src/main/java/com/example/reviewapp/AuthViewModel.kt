@@ -92,9 +92,11 @@ fun checkAuthStatus() {
                 }
             }
     }
+
 }
 
 sealed class AuthState {
+
     object Unauthenticated : AuthState()
     object Authenticated : AuthState()
     object Loading : AuthState()
