@@ -463,10 +463,6 @@
 //    }
 //}
 
-
-
-
-
 package com.example.reviewapp.Screens
 
 import androidx.compose.foundation.clickable
@@ -493,11 +489,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.reviewsapp.BottomNavItem
+import com.google.firebase.auth.FirebaseAuth
+
 
 @Composable
 fun ProfileScreen(navController: NavController) {
     val scrollState = rememberScrollState()
+    val user = FirebaseAuth.getInstance().currentUser
+    val displayName = user?.displayName ?: "No Name"
+
 
     Box(
         modifier = Modifier
@@ -511,6 +511,7 @@ fun ProfileScreen(navController: NavController) {
                 .padding(16.dp)
                 .padding(top = 40.dp, bottom = 80.dp) // Added top padding for status bar
         ) {
+
             // Back Button (separate from card)
             Row(
                 modifier = Modifier
@@ -554,7 +555,7 @@ fun ProfileScreen(navController: NavController) {
             onHomeClick = { navController.navigate("HOMESCREEN") },
             onReviewsClick = { navController.navigate("MYREVIEWSSCREEN") },
             onProfileClick = { /* Already on Profile, do nothing */ },
-            onBusinessClick = {navController.navigate("MYBUSINESSSCREEN") } // Added business click handler
+            onBusinessClick = { navController.navigate("MYBUSINESSSCREEN") } // Added business click handler
         )
     }
 }
@@ -681,8 +682,12 @@ fun EnhancedProfileHeader() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Name
+//                Text(
+//                    text = "Jonathan Smith",
+                val currentUser = remember { FirebaseAuth.getInstance().currentUser }
+                val displayName = currentUser?.displayName ?: "Guest User"
                 Text(
-                    text = "Jonathan Smith",
+                    text = displayName,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -863,63 +868,14 @@ fun EnhancedMenuOption(
     }
 }
 
-//@Composable
-//fun ProfileBottomNavigation(
-//    modifier: Modifier = Modifier,
-//    onHomeClick: () -> Unit,
-//    onReviewsClick: () -> Unit,
-//    onProfileClick: () -> Unit,
-//    onBusinessClick: () -> Unit
-//) {
-//    Card(
-//        modifier = modifier.fillMaxWidth(),
-//        colors = CardDefaults.cardColors(containerColor = Color.White),
-//        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-//        shape = RoundedCornerShape(0.dp)
-//    ) {
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp),
-//            horizontalArrangement = Arrangement.SpaceEvenly
-//        ) {
-//            ProfileBottomNavItem(
-//                icon = Icons.Default.Home,
-//                label = "Home",
-//                isSelected = false,
-//                onClick = onHomeClick
-//            )
-//
-//            ProfileBottomNavItem(
-//                icon = Icons.Default.Business,
-//                label = "My Businesses",
-//                isSelected = false,
-//                onClick = onBusinessClick
-//            )
-//
-//            ProfileBottomNavItem(
-//                icon = Icons.Default.RateReview,
-//                label = "My Reviews",
-//                isSelected = false,
-//                onClick = onReviewsClick
-//            )
-//
-//            ProfileBottomNavItem(
-//                icon = Icons.Default.Person,
-//                label = "Profile",
-//                isSelected = true,
-//                onClick = onProfileClick
-//            )
-//        }
-//    }
-//}
 @Composable
 fun ProfileBottomNavigation(
     modifier: Modifier = Modifier,
     onHomeClick: () -> Unit,
     onReviewsClick: () -> Unit,
     onProfileClick: () -> Unit,
-    onBusinessClick: () -> Unit
+    onBusinessClick: () -> Unit // Added business click handler
+
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),

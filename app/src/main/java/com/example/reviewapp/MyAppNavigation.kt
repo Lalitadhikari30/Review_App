@@ -46,7 +46,7 @@ fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel)
             ProfileScreen(navController)
         }
         composable("EDITPROFILESCREEN") {
-            EditProfileScreen()
+            EditProfileScreen(navController)
         }
         composable("HELPCENTERSCREEN") {
             HelpCenterScreen(navController)

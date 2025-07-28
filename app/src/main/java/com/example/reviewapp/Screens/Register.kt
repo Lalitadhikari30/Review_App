@@ -41,9 +41,6 @@ import com.example.reviewapp.AuthState
 import com.example.reviewapp.AuthViewModel
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
-//import np.com.bimalkafle.reviewapp.AuthState
-//import np.com.bimalkafle.firebaseauthdemoapp.AuthViewModel
-//import androidx.navigation.NavController
 
 
 
@@ -105,14 +102,31 @@ fun RegisterScreen(
     val authState = authViewModel.authState.observeAsState()
     val scrollState = rememberScrollState()
 
+//    LaunchedEffect(authState.value) {
+//        when (authState.value) {
+//            is AuthState.Loading -> isLoading = true
+//            is AuthState.Authenticated,
+//            is AuthState.Error -> isLoading = false
+//            else -> {}
+//        }
+//    }
+
     LaunchedEffect(authState.value) {
-        when (authState.value) {
+        when (val state = authState.value) {
             is AuthState.Loading -> isLoading = true
-            is AuthState.Authenticated,
-            is AuthState.Error -> isLoading = false
+            is AuthState.Authenticated -> {
+                isLoading = false
+//                navController.navigate("LOGIN") {
+//                    popUpTo(0) // Clear backstack so user can't go back to register
+                }
+//            }
+            is AuthState.Error -> {
+                isLoading = false
+            }
             else -> {}
         }
     }
+
 
 
 
@@ -325,7 +339,7 @@ fun RegisterScreen(
 
                     if (isFormValid) {
                         isLoading = true
-                        authViewModel.signup(email, password)
+                        authViewModel.signup(username, email, password)
 
 //                        registerUserWithName(
 //                            email = email,
@@ -542,10 +556,5 @@ fun isValidEmail(email: String): Boolean {
     return emailPattern.matcher(email).matches()
 }
 
-//@Composable
-//fun RegisterScreenPreview() {
-//    MaterialTheme {
-//        RegisterScreen(rememberNavController())
-//    }
-//}
+
 
