@@ -602,6 +602,12 @@ fun BottomNavigationBar(navController: NavController) {
                 isSelected = true,
                 onClick = { /* Already on Home screen */ }
             )
+            BottomNavItem(
+                icon = Icons.Default.Business,
+                label = "My Business",
+                isSelected = false,
+                onClick = { navController.navigate("MYBUSINESSSCREEN") }
+            )
 
             BottomNavItem(
                 icon = Icons.Default.RateReview,

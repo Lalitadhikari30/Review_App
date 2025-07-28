@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.RateReview
@@ -185,6 +186,13 @@ fun MyReviewsScreen(navController: NavController) {
                         isSelected = false,
                         onClick = {
                         navController.navigate("HOMESCREEN")/* Handle home navigation */ }
+                    )
+                    BottomNavItem(
+                        icon = Icons.Default.Business,
+                        label = "My Business",
+                        isSelected = false,
+                        onClick = {
+                            navController.navigate("MYBUSINESSSCREEN")/* Handle home navigation */ }
                     )
                     BottomNavItem(
                         icon = Icons.Default.RateReview,

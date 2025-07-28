@@ -46,6 +46,41 @@ import java.util.regex.Pattern
 //import androidx.navigation.NavController
 
 
+
+// to save the user data in Firestore after registration
+//fun registerUserWithName(
+//    email: String,
+//    password: String,
+//    username: String,
+//    context: android.content.Context,
+//    onSuccess: () -> Unit,
+//    onError: (String) -> Unit
+//) {
+//    val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
+//    val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+//
+//    auth.createUserWithEmailAndPassword(email, password)
+//        .addOnSuccessListener { result ->
+//            val uid = result.user?.uid ?: return@addOnSuccessListener
+//            val userMap = hashMapOf(
+//                "name" to username,
+//                "email" to email
+//            )
+//
+//            db.collection("users").document(uid).set(userMap)
+//                .addOnSuccessListener {
+//                    Toast.makeText(context, "User registered and saved!", Toast.LENGTH_SHORT).show()
+//                    onSuccess()
+//                }
+//                .addOnFailureListener {
+//                    onError(it.message ?: "Failed to save user data")
+//                }
+//        }
+//        .addOnFailureListener {
+//            onError(it.message ?: "Registration failed")
+//        }
+//}
+
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier, navController: NavController, authViewModel : AuthViewModel,
@@ -291,6 +326,23 @@ fun RegisterScreen(
                     if (isFormValid) {
                         isLoading = true
                         authViewModel.signup(email, password)
+
+//                        registerUserWithName(
+//                            email = email,
+//                            password = password,
+//                            username = username,
+//                            context = context,
+//                            onSuccess = {
+//                                isLoading = false
+//                                onRegisterSuccess(username, email, password) // optional
+//                                navController.navigate("LOGIN") // or wherever you go after signup
+//                            },
+//                            onError = {
+//                                isLoading = false
+//                                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+//                            }
+//                        )
+
 
                         // optional feedback (remove if handled via LiveData)
                         Toast.makeText(context, "Registration successful!", Toast.LENGTH_SHORT).show()

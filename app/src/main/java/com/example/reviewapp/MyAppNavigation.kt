@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.Screens.MyBusinessScreen
 import com.example.review.Screens.ForgotPasswordScreen
 import com.example.reviewapp.Screens.LoginScreen
 import com.example.reviewapp.Screens.RegisterScreen
@@ -25,7 +26,7 @@ import com.example.reviewsapp.Screen.QueryScreen.QueryScreen
 fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "ONBOARDINGSCREEN") {
+    NavHost(navController = navController, startDestination = "HOMESCREEN") {
         composable("ONBOARDINGSCREEN") {
             OnboardingScreen(navController)
         }
@@ -68,6 +69,8 @@ fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel)
         composable("GIVEREVIEW") {
             GiveReview(navController)
         }
-
+        composable("MyBusinessScreen") {
+            MyBusinessScreen(navController)
+        }
     }
 }

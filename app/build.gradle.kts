@@ -61,12 +61,15 @@ dependencies {
     implementation(libs.firebase.auth)
 
     implementation("androidx.compose.runtime:runtime-livedata:1.8.3")
+    implementation(libs.firebase.firestore)
 
 
     //Nav Controller
     val nav_version = "2.9.1"
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation("androidx.compose.foundation:foundation:1.5.0")
+// Use the version that matches your Compose version
 
     // Test dependencies
     testImplementation(libs.junit)
