@@ -31,6 +31,578 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
 
+
+// Add this data class for country codes
+data class CountryCode(
+    val country: String,
+    val code: String,
+    val flag: String
+)
+
+// Country codes data
+val countryCodes = listOf(
+    CountryCode("India", "+91", "🇮🇳"),
+    CountryCode("United States", "+1", "🇺🇸"),
+    CountryCode("United Kingdom", "+44", "🇬🇧"),
+    CountryCode("Canada", "+1", "🇨🇦"),
+    CountryCode("Australia", "+61", "🇦🇺"),
+    CountryCode("Germany", "+49", "🇩🇪"),
+    CountryCode("France", "+33", "🇫🇷"),
+    CountryCode("Italy", "+39", "🇮🇹"),
+    CountryCode("Spain", "+34", "🇪🇸"),
+    CountryCode("Japan", "+81", "🇯🇵"),
+    CountryCode("China", "+86", "🇨🇳"),
+    CountryCode("South Korea", "+82", "🇰🇷"),
+    CountryCode("Brazil", "+55", "🇧🇷"),
+    CountryCode("Mexico", "+52", "🇲🇽"),
+    CountryCode("Russia", "+7", "🇷🇺"),
+    CountryCode("South Africa", "+27", "🇿🇦"),
+    CountryCode("Netherlands", "+31", "🇳🇱"),
+    CountryCode("Switzerland", "+41", "🇨🇭"),
+    CountryCode("Sweden", "+46", "🇸🇪"),
+    CountryCode("Norway", "+47", "🇳🇴"),
+    CountryCode("Denmark", "+45", "🇩🇰"),
+    CountryCode("Finland", "+358", "🇫🇮"),
+    CountryCode("Belgium", "+32", "🇧🇪"),
+    CountryCode("Austria", "+43", "🇦🇹"),
+    CountryCode("Poland", "+48", "🇵🇱"),
+    CountryCode("Turkey", "+90", "🇹🇷"),
+    CountryCode("UAE", "+971", "🇦🇪"),
+    CountryCode("Saudi Arabia", "+966", "🇸🇦"),
+    CountryCode("Singapore", "+65", "🇸🇬"),
+    CountryCode("Malaysia", "+60", "🇲🇾"),
+    CountryCode("Thailand", "+66", "🇹🇭"),
+    CountryCode("Indonesia", "+62", "🇮🇩"),
+    CountryCode("Philippines", "+63", "🇵🇭"),
+    CountryCode("Vietnam", "+84", "🇻🇳"),
+    CountryCode("Bangladesh", "+880", "🇧🇩"),
+    CountryCode("Pakistan", "+92", "🇵🇰"),
+    CountryCode("Sri Lanka", "+94", "🇱🇰"),
+    CountryCode("Nepal", "+977", "🇳🇵"),
+    CountryCode("Egypt", "+20", "🇪🇬"),
+    CountryCode("Nigeria", "+234", "🇳🇬"),
+    CountryCode("Kenya", "+254", "🇰🇪"),
+    CountryCode("Ghana", "+233", "🇬🇭"),
+    CountryCode("Argentina", "+54", "🇦🇷"),
+    CountryCode("Chile", "+56", "🇨🇱"),
+    CountryCode("Colombia", "+57", "🇨🇴"),
+    CountryCode("Peru", "+51", "🇵🇪"),
+    CountryCode("New Zealand", "+64", "🇳🇿")
+)
+
+@Composable
+fun AddBusinessDialog(
+    onDismiss: () -> Unit,
+    onAddBusiness: (Business) -> Unit
+) {
+    var businessName by remember { mutableStateOf("") }
+    var businessPhone by remember { mutableStateOf("") }
+    var businessEmail by remember { mutableStateOf("") }
+    var businessWebsite by remember { mutableStateOf("") }
+    var businessCategory by remember { mutableStateOf("") }
+    var businessLocation by remember { mutableStateOf("") }
+    var businessDescription by remember { mutableStateOf("") }
+    var isSubmitting by remember { mutableStateOf(false) }
+
+    // Country code selection state
+    var selectedCountryCode by remember { mutableStateOf(countryCodes[0]) } // Default to India
+    var showCountryCodePicker by remember { mutableStateOf(false) }
+
+    // Form validation
+    val isFormValid = businessName.isNotBlank() &&
+            businessPhone.isNotBlank() &&
+            businessCategory.isNotBlank() &&
+            businessLocation.isNotBlank()
+
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 700.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = BusinessColors.Surface
+            )
+        ) {
+            Column {
+                // Header
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(BusinessColors.Primary)
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "List Your Business",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                            Text(
+                                text = "Join our business directory",
+                                fontSize = 14.sp,
+                                color = Color.White.copy(alpha = 0.8f)
+                            )
+                        }
+                        IconButton(onClick = onDismiss) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Close",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                }
+
+                LazyColumn(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    item {
+                        EnhancedTextField(
+                            value = businessName,
+                            onValueChange = { businessName = it },
+                            label = "Business Name",
+                            icon = Icons.Default.Business,
+                            isRequired = true
+                        )
+                    }
+
+                    item {
+                        // Phone Number with Country Code Picker
+                        PhoneNumberInputField(
+                            phoneNumber = businessPhone,
+                            onPhoneNumberChange = { businessPhone = it },
+                            selectedCountryCode = selectedCountryCode,
+                            onCountryCodeClick = { showCountryCodePicker = true },
+                            isRequired = true
+                        )
+                    }
+
+                    item {
+                        EnhancedTextField(
+                            value = businessEmail,
+                            onValueChange = { businessEmail = it },
+                            label = "Email Address",
+                            icon = Icons.Default.Email
+                        )
+                    }
+                    item {
+                        EnhancedTextField(
+                            value = businessWebsite,
+                            onValueChange = { businessWebsite = it },
+                            label = "Website",
+                            icon = Icons.Default.Language
+                        )
+                    }
+                    item {
+                        EnhancedTextField(
+                            value = businessCategory,
+                            onValueChange = { businessCategory = it },
+                            label = "Business Category",
+                            icon = Icons.Default.Category,
+                            isRequired = true
+                        )
+                    }
+                    item {
+                        EnhancedTextField(
+                            value = businessLocation,
+                            onValueChange = { businessLocation = it },
+                            label = "Location",
+                            icon = Icons.Default.LocationOn,
+                            isRequired = true
+                        )
+                    }
+                    item {
+                        EnhancedTextField(
+                            value = businessDescription,
+                            onValueChange = { businessDescription = it },
+                            label = "Business Description",
+                            icon = Icons.Default.Description,
+                            maxLines = 4
+                        )
+                    }
+
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            OutlinedButton(
+                                onClick = onDismiss,
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(10.dp),
+                                border = BorderStroke(1.2.dp, BusinessColors.Border),
+                                enabled = !isSubmitting
+                            ) {
+                                Text("Cancel")
+                            }
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Button(
+                                onClick = {
+                                    if (isFormValid) {
+                                        isSubmitting = true
+                                        val fullPhoneNumber = "${selectedCountryCode.code} $businessPhone"
+                                        onAddBusiness(
+                                            Business(
+                                                id = (100000..999999).random(),
+                                                name = businessName,
+                                                phone = fullPhoneNumber,
+                                                email = businessEmail,
+                                                website = businessWebsite,
+                                                category = businessCategory,
+                                                location = businessLocation,
+                                                hours = BusinessHours(),
+                                                rating = 0f,
+                                                reviewCount = 0,
+                                                description = businessDescription.ifBlank { "New business listing" },
+                                                verified = false,
+                                                isOpen = true
+                                            )
+                                        )
+                                        onDismiss()
+                                    }
+                                },
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(10.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = BusinessColors.ButtonPrimary
+                                ),
+                                enabled = isFormValid && !isSubmitting
+                            ) {
+                                if (isSubmitting) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(16.dp),
+                                        color = Color.White,
+                                        strokeWidth = 2.dp
+                                    )
+                                } else {
+                                    Text("Add Business")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Country Code Picker Dialog
+    if (showCountryCodePicker) {
+        CountryCodePickerDialog(
+            countryCodes = countryCodes,
+            selectedCountryCode = selectedCountryCode,
+            onCountryCodeSelected = { countryCode ->
+                selectedCountryCode = countryCode
+                showCountryCodePicker = false
+            },
+            onDismiss = { showCountryCodePicker = false }
+        )
+    }
+}
+
+@Composable
+fun PhoneNumberInputField(
+    phoneNumber: String,
+    onPhoneNumberChange: (String) -> Unit,
+    selectedCountryCode: CountryCode,
+    onCountryCodeClick: () -> Unit,
+    isRequired: Boolean = false
+) {
+    Column {
+        Text(
+            text = if (isRequired) "Phone Number *" else "Phone Number",
+            fontSize = 14.sp,
+            color = BusinessColors.OnSurface.copy(alpha = 0.7f),
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Country Code Picker Button
+            Card(
+                modifier = Modifier
+                    .clickable { onCountryCodeClick() }
+                    .padding(end = 8.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = BusinessColors.CardBackground
+                ),
+                border = BorderStroke(1.dp, BusinessColors.Border),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = selectedCountryCode.flag,
+                        fontSize = 16.sp
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = selectedCountryCode.code,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = BusinessColors.OnSurface
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Icon(
+                        Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Select country code",
+                        tint = BusinessColors.Accent,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+
+            // Phone Number Input
+            OutlinedTextField(
+                value = phoneNumber,
+                onValueChange = onPhoneNumberChange,
+                placeholder = {
+                    Text(
+                        text = "Enter phone number",
+                        color = BusinessColors.OnSurface.copy(alpha = 0.5f)
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.Phone,
+                        contentDescription = null,
+                        tint = BusinessColors.Accent,
+                        modifier = Modifier.size(20.dp)
+                    )
+                },
+                modifier = Modifier.weight(1f),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = BusinessColors.Primary,
+                    unfocusedBorderColor = BusinessColors.Border,
+                    focusedLeadingIconColor = BusinessColors.Primary,
+                    unfocusedLeadingIconColor = BusinessColors.Accent
+                ),
+                shape = RoundedCornerShape(12.dp),
+                singleLine = true
+            )
+        }
+    }
+}
+
+@Composable
+fun CountryCodePickerDialog(
+    countryCodes: List<CountryCode>,
+    selectedCountryCode: CountryCode,
+    onCountryCodeSelected: (CountryCode) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var searchQuery by remember { mutableStateOf("") }
+
+    val filteredCountryCodes = remember(searchQuery, countryCodes) {
+        if (searchQuery.isBlank()) {
+            countryCodes
+        } else {
+            countryCodes.filter { country ->
+                country.country.contains(searchQuery, ignoreCase = true) ||
+                        country.code.contains(searchQuery, ignoreCase = true)
+            }
+        }
+    }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 600.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = BusinessColors.Surface
+            )
+        ) {
+            Column {
+                // Header
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(BusinessColors.Primary)
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Select Country Code",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        IconButton(onClick = onDismiss) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Close",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                }
+
+                // Search Bar
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = {
+                        Text(
+                            text = "Search country or code...",
+                            color = BusinessColors.OnSurface.copy(alpha = 0.5f)
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = null,
+                            tint = BusinessColors.Accent,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    },
+                    trailingIcon = {
+                        if (searchQuery.isNotEmpty()) {
+                            IconButton(onClick = { searchQuery = "" }) {
+                                Icon(
+                                    Icons.Default.Clear,
+                                    contentDescription = "Clear",
+                                    tint = BusinessColors.OnSurface.copy(alpha = 0.6f),
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = BusinessColors.Primary,
+                        unfocusedBorderColor = BusinessColors.Border
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true
+                )
+
+                // Country List
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    items(filteredCountryCodes) { countryCode ->
+                        CountryCodeItem(
+                            countryCode = countryCode,
+                            isSelected = countryCode == selectedCountryCode,
+                            onSelect = { onCountryCodeSelected(countryCode) }
+                        )
+
+                        if (countryCode != filteredCountryCodes.last()) {
+                            HorizontalDivider(
+                                color = BusinessColors.Border,
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            )
+                        }
+                    }
+
+                    if (filteredCountryCodes.isEmpty()) {
+                        item {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(32.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Icon(
+                                    Icons.Default.SearchOff,
+                                    contentDescription = null,
+                                    tint = BusinessColors.Accent.copy(alpha = 0.6f),
+                                    modifier = Modifier.size(48.dp)
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "No countries found",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = BusinessColors.OnSurface,
+                                    textAlign = TextAlign.Center
+                                )
+                                Text(
+                                    text = "Try searching with different keywords",
+                                    fontSize = 14.sp,
+                                    color = BusinessColors.OnSurface.copy(alpha = 0.6f),
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CountryCodeItem(
+    countryCode: CountryCode,
+    isSelected: Boolean,
+    onSelect: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onSelect() }
+            .background(
+                if (isSelected) BusinessColors.Primary.copy(alpha = 0.1f)
+                else Color.Transparent,
+                RoundedCornerShape(8.dp)
+            )
+            .padding(vertical = 12.dp, horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = countryCode.flag,
+            fontSize = 20.sp,
+            modifier = Modifier.padding(end = 12.dp)
+        )
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = countryCode.country,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = BusinessColors.OnSurface
+            )
+            Text(
+                text = countryCode.code,
+                fontSize = 14.sp,
+                color = BusinessColors.OnSurface.copy(alpha = 0.7f)
+            )
+        }
+
+        if (isSelected) {
+            Icon(
+                Icons.Default.Check,
+                contentDescription = "Selected",
+                tint = BusinessColors.Primary,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
 // Custom Colors - Red Theme
 object BusinessColors {
     val Primary = Color(0xFFDC2626) // Vibrant red
@@ -951,203 +1523,6 @@ fun BusinessHoursTable(hours: BusinessHours) {
     }
 }
 
-@Composable
-fun AddBusinessDialog(
-    onDismiss: () -> Unit,
-    onAddBusiness: (Business) -> Unit
-) {
-    var businessName by remember { mutableStateOf("") }
-    var businessPhone by remember { mutableStateOf("") }
-    var businessEmail by remember { mutableStateOf("") }
-    var businessWebsite by remember { mutableStateOf("") }
-    var businessCategory by remember { mutableStateOf("") }
-    var businessLocation by remember { mutableStateOf("") }
-    var businessDescription by remember { mutableStateOf("") }
-    var isSubmitting by remember { mutableStateOf(false) }
-
-    // Form validation
-    val isFormValid = businessName.isNotBlank() &&
-            businessPhone.isNotBlank() &&
-            businessCategory.isNotBlank() &&
-            businessLocation.isNotBlank()
-
-    Dialog(onDismissRequest = onDismiss) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 700.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = BusinessColors.Surface
-            )
-        ) {
-            Column {
-                // Header
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(BusinessColors.Primary)
-                        .padding(16.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column {
-                            Text(
-                                text = "List Your Business",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                            Text(
-                                text = "Join our business directory",
-                                fontSize = 14.sp,
-                                color = Color.White.copy(alpha = 0.8f)
-                            )
-                        }
-                        IconButton(onClick = onDismiss) {
-                            Icon(
-                                Icons.Default.Close,
-                                contentDescription = "Close",
-                                tint = Color.White
-                            )
-                        }
-                    }
-                }
-
-                LazyColumn(
-                    modifier = Modifier.padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    item {
-                        EnhancedTextField(
-                            value = businessName,
-                            onValueChange = { businessName = it },
-                            label = "Business Name",
-                            icon = Icons.Default.Business,
-                            isRequired = true
-                        )
-                    }
-                    item {
-                        EnhancedTextField(
-                            value = businessPhone,
-                            onValueChange = { businessPhone = it },
-                            label = "Phone Number",
-                            icon = Icons.Default.Phone,
-                            isRequired = true
-                        )
-                    }
-                    item {
-                        EnhancedTextField(
-                            value = businessEmail,
-                            onValueChange = { businessEmail = it },
-                            label = "Email Address",
-                            icon = Icons.Default.Email
-                        )
-                    }
-                    item {
-                        EnhancedTextField(
-                            value = businessWebsite,
-                            onValueChange = { businessWebsite = it },
-                            label = "Website",
-                            icon = Icons.Default.Language
-                        )
-                    }
-                    item {
-                        EnhancedTextField(
-                            value = businessCategory,
-                            onValueChange = { businessCategory = it },
-                            label = "Business Category",
-                            icon = Icons.Default.Category,
-                            isRequired = true
-                        )
-                    }
-                    item {
-                        EnhancedTextField(
-                            value = businessLocation,
-                            onValueChange = { businessLocation = it },
-                            label = "Location",
-                            icon = Icons.Default.LocationOn,
-                            isRequired = true
-                        )
-                    }
-                    item {
-                        EnhancedTextField(
-                            value = businessDescription,
-                            onValueChange = { businessDescription = it },
-                            label = "Business Description",
-                            icon = Icons.Default.Description,
-                            maxLines = 4
-                        )
-                    }
-
-                    item {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            OutlinedButton(
-                                onClick = onDismiss,
-                                modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(10.dp),
-                                border = BorderStroke(1.2.dp, BusinessColors.Border),
-                                enabled = !isSubmitting
-                            ) {
-                                Text("Cancel")
-                            }
-
-                            Spacer(modifier = Modifier.width(12.dp))
-
-                            Button(
-                                onClick = {
-                                    if (isFormValid) {
-                                        isSubmitting = true
-                                        onAddBusiness(
-                                            Business(
-                                                id = (100000..999999).random(),
-                                                name = businessName,
-                                                phone = businessPhone,
-                                                email = businessEmail,
-                                                website = businessWebsite,
-                                                category = businessCategory,
-                                                location = businessLocation,
-                                                hours = BusinessHours(),
-                                                rating = 0f,
-                                                reviewCount = 0,
-                                                description = businessDescription.ifBlank { "New business listing" },
-                                                verified = false,
-                                                isOpen = true
-                                            )
-                                        )
-                                        onDismiss()
-                                    }
-                                },
-                                modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(10.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = BusinessColors.ButtonPrimary
-                                ),
-                                enabled = isFormValid && !isSubmitting
-                            ) {
-                                if (isSubmitting) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(16.dp),
-                                        color = Color.White,
-                                        strokeWidth = 2.dp
-                                    )
-                                } else {
-                                    Text("Add Business")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun EnhancedTextField(
