@@ -1,4 +1,5 @@
 //
+//
 //@file:OptIn(ExperimentalMaterial3Api::class)
 //package com.example.reviewapp.Screens
 //
@@ -29,6 +30,7 @@
 //import androidx.compose.ui.tooling.preview.Preview
 //import androidx.compose.ui.unit.dp
 //import androidx.compose.ui.unit.sp
+//import androidx.compose.ui.window.Dialog
 //import androidx.navigation.NavController
 //import com.example.reviewapp.AuthViewModel
 //import com.example.reviewapp.R
@@ -238,10 +240,26 @@
 //                onAddBusiness = {
 //                    showBottomSheet = false
 //                    // Handle add business navigation
+//                },
+//                onShowAskReview = {
+//                    showAskReviewDialog = true
+//                    showBottomSheet = false
 //                }
 //            )
 //        }
 //    }
+//
+//    // Ask for Review Popup
+//    AskForReviewPopup(
+//        showDialog = showAskReviewDialog,
+//        onDismiss = { showAskReviewDialog = false },
+//        onConfirm = { contact, business ->
+//            // Handle the confirmation logic here
+//            showAskReviewDialog = false
+//            // You can process the selected contact and business
+//            println("Selected: $contact from $business") // For testing
+//        }
+//    )
 //}
 //
 //@Composable
@@ -249,7 +267,8 @@
 //    navController: NavController,
 //    onDismiss: () -> Unit,
 //    onAddReview: () -> Unit,
-//    onAddBusiness: () -> Unit
+//    onAddBusiness: () -> Unit,
+//    onShowAskReview: () -> Unit
 //) {
 //    Column(
 //        modifier = Modifier
@@ -284,10 +303,7 @@
 //            icon = Icons.Default.Reviews,
 //            title = "Ask for Review",
 //            subtitle = "Loved it? Let us and others know!",
-//            onClick = {
-//                navController.navigate("ONETOONESLIPSCREEN")
-//                onDismiss()
-//            }
+//            onClick = onShowAskReview
 //        )
 //
 //        Spacer(modifier = Modifier.height(12.dp))
@@ -304,6 +320,230 @@
 //        )
 //
 //        Spacer(modifier = Modifier.height(24.dp))
+//    }
+//}
+//
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun AskForReviewPopup(
+//    showDialog: Boolean,
+//    onDismiss: () -> Unit,
+//    onConfirm: (contact: String, business: String) -> Unit
+//) {
+//    if (showDialog) {
+//        var selectedContact by remember { mutableStateOf("") }
+//        var selectedBusiness by remember { mutableStateOf("") }
+//        var contactDropdownExpanded by remember { mutableStateOf(false) }
+//        var businessDropdownExpanded by remember { mutableStateOf(false) }
+//
+//        val redTheme = Color(0xFFDC2626)
+//        val textGray = Color(0xFF374151)
+//        val borderGray = Color(0xFFD1D5DB)
+//
+//        val contacts = listOf(
+//            "Akash Pasricha",
+//            "Akhil Gupta",
+//            "Amisha Azad",
+//            "Ankur Gupta",
+//            "Anurag Lamba",
+//            "Debasish Ghose",
+//            "Devanshu",
+//            "Gurpal Singh",
+//            "Gurvinder Singh Chawla",
+//            "Jitin Kumar Garg",
+//            "Kamal Kumar",
+//            "Kaushal Daga",
+//            "Madan Mohan Chugh",
+//            "Manish Narang"
+//        )
+//
+//        val businesses = listOf(
+//            "Business Unit 1",
+//            "Business Unit 2",
+//            "Business Unit 3",
+//            "Business Unit 4"
+//        )
+//
+//        Dialog(onDismissRequest = onDismiss) {
+//            Card(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                shape = RoundedCornerShape(16.dp),
+//                colors = CardDefaults.cardColors(containerColor = Color.White),
+//                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+//            ) {
+//                Column(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(20.dp),
+//                    verticalArrangement = Arrangement.spacedBy(20.dp)
+//                ) {
+//                    // Header with close button
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.SpaceBetween,
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        Text(
+//                            text = "Ask for Review",
+//                            fontSize = 18.sp,
+//                            fontWeight = FontWeight.SemiBold,
+//                            color = textGray
+//                        )
+//                        IconButton(
+//                            onClick = onDismiss,
+//                            modifier = Modifier.size(24.dp)
+//                        ) {
+//                            Icon(
+//                                Icons.Default.Close,
+//                                contentDescription = "Close",
+//                                tint = Color.Gray,
+//                                modifier = Modifier.size(20.dp)
+//                            )
+//                        }
+//                    }
+//
+//                    // Select Contact Dropdown
+//                    ExposedDropdownMenuBox(
+//                        expanded = contactDropdownExpanded,
+//                        onExpandedChange = { contactDropdownExpanded = it }
+//                    ) {
+//                        OutlinedTextField(
+//                            value = selectedContact,
+//                            onValueChange = { },
+//                            readOnly = true,
+//                            placeholder = { Text("Select Contact", color = Color(0xFF9CA3AF)) },
+//                            trailingIcon = {
+//                                Icon(
+//                                    Icons.Default.ArrowDropDown,
+//                                    contentDescription = null,
+//                                    tint = redTheme
+//                                )
+//                            },
+//                            modifier = Modifier
+//                                .menuAnchor()
+//                                .fillMaxWidth(),
+//                            colors = OutlinedTextFieldDefaults.colors(
+//                                focusedBorderColor = redTheme,
+//                                unfocusedBorderColor = borderGray,
+//                                focusedContainerColor = Color.White,
+//                                unfocusedContainerColor = Color.White
+//                            )
+//                        )
+//                        ExposedDropdownMenu(
+//                            expanded = contactDropdownExpanded,
+//                            onDismissRequest = { contactDropdownExpanded = false }
+//                        ) {
+//                            contacts.forEach { contact ->
+//                                DropdownMenuItem(
+//                                    text = { Text(contact) },
+//                                    onClick = {
+//                                        selectedContact = contact
+//                                        contactDropdownExpanded = false
+//                                    }
+//                                )
+//                            }
+//                        }
+//                    }
+//
+//                    // Select Business Dropdown
+//                    ExposedDropdownMenuBox(
+//                        expanded = businessDropdownExpanded,
+//                        onExpandedChange = { businessDropdownExpanded = it }
+//                    ) {
+//                        OutlinedTextField(
+//                            value = selectedBusiness,
+//                            onValueChange = { },
+//                            readOnly = true,
+//                            placeholder = { Text("Select Business", color = Color(0xFF9CA3AF)) },
+//                            trailingIcon = {
+//                                Icon(
+//                                    Icons.Default.ArrowDropDown,
+//                                    contentDescription = null,
+//                                    tint = redTheme
+//                                )
+//                            },
+//                            modifier = Modifier
+//                                .menuAnchor()
+//                                .fillMaxWidth(),
+//                            colors = OutlinedTextFieldDefaults.colors(
+//                                focusedBorderColor = redTheme,
+//                                unfocusedBorderColor = borderGray,
+//                                focusedContainerColor = Color.White,
+//                                unfocusedContainerColor = Color.White
+//                            )
+//                        )
+//                        ExposedDropdownMenu(
+//                            expanded = businessDropdownExpanded,
+//                            onDismissRequest = { businessDropdownExpanded = false }
+//                        ) {
+//                            businesses.forEach { business ->
+//                                DropdownMenuItem(
+//                                    text = { Text(business) },
+//                                    onClick = {
+//                                        selectedBusiness = business
+//                                        businessDropdownExpanded = false
+//                                    }
+//                                )
+//                            }
+//                        }
+//                    }
+//
+//                    // Action Buttons
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+//                    ) {
+//                        // Cancel Button
+//                        OutlinedButton(
+//                            onClick = onDismiss,
+//                            modifier = Modifier
+//                                .weight(1f)
+//                                .height(48.dp),
+//                            colors = ButtonDefaults.outlinedButtonColors(
+//                                contentColor = redTheme
+//                            ),
+//                            border = ButtonDefaults.outlinedButtonBorder.copy(
+//                                brush = androidx.compose.foundation.BorderStroke(1.dp, redTheme).brush
+//                            ),
+//                            shape = RoundedCornerShape(24.dp)
+//                        ) {
+//                            Text(
+//                                text = "Cancel",
+//                                fontSize = 16.sp,
+//                                fontWeight = FontWeight.Medium
+//                            )
+//                        }
+//
+//                        // Confirm Button
+//                        Button(
+//                            onClick = {
+//                                if (selectedContact.isNotEmpty() && selectedBusiness.isNotEmpty()) {
+//                                    onConfirm(selectedContact, selectedBusiness)
+//                                }
+//                            },
+//                            modifier = Modifier
+//                                .weight(1f)
+//                                .height(48.dp),
+//                            colors = ButtonDefaults.buttonColors(
+//                                containerColor = redTheme,
+//                                disabledContainerColor = redTheme.copy(alpha = 0.5f)
+//                            ),
+//                            enabled = selectedContact.isNotEmpty() && selectedBusiness.isNotEmpty(),
+//                            shape = RoundedCornerShape(24.dp)
+//                        ) {
+//                            Text(
+//                                text = "Confirm",
+//                                fontSize = 16.sp,
+//                                fontWeight = FontWeight.SemiBold,
+//                                color = Color.White
+//                            )
+//                        }
+//                    }
+//                }
+//            }
+//        }
 //    }
 //}
 //
@@ -458,7 +698,7 @@
 //    ) {
 //        Column(
 //            modifier = Modifier
-//                .fillMaxWidth()
+//                .fillMaxSize()
 //                .padding(vertical = 8.dp)
 //        ) {
 //            Row(
@@ -908,11 +1148,11 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController, auth
     AskForReviewPopup(
         showDialog = showAskReviewDialog,
         onDismiss = { showAskReviewDialog = false },
-        onConfirm = { contact, business ->
+        onConfirm = { searchText, business ->
             // Handle the confirmation logic here
             showAskReviewDialog = false
-            // You can process the selected contact and business
-            println("Selected: $contact from $business") // For testing
+            // You can process the searched person and business
+            println("Searched Person: $searchText from $business") // For testing
         }
     )
 }
@@ -983,34 +1223,16 @@ fun AddOptionsBottomSheet(
 fun AskForReviewPopup(
     showDialog: Boolean,
     onDismiss: () -> Unit,
-    onConfirm: (contact: String, business: String) -> Unit
+    onConfirm: (searchText: String, business: String) -> Unit
 ) {
     if (showDialog) {
-        var selectedContact by remember { mutableStateOf("") }
+        var searchText by remember { mutableStateOf("") }
         var selectedBusiness by remember { mutableStateOf("") }
-        var contactDropdownExpanded by remember { mutableStateOf(false) }
         var businessDropdownExpanded by remember { mutableStateOf(false) }
 
         val redTheme = Color(0xFFDC2626)
         val textGray = Color(0xFF374151)
         val borderGray = Color(0xFFD1D5DB)
-
-        val contacts = listOf(
-            "Akash Pasricha",
-            "Akhil Gupta",
-            "Amisha Azad",
-            "Ankur Gupta",
-            "Anurag Lamba",
-            "Debasish Ghose",
-            "Devanshu",
-            "Gurpal Singh",
-            "Gurvinder Singh Chawla",
-            "Jitin Kumar Garg",
-            "Kamal Kumar",
-            "Kaushal Daga",
-            "Madan Mohan Chugh",
-            "Manish Narang"
-        )
 
         val businesses = listOf(
             "Business Unit 1",
@@ -1059,48 +1281,35 @@ fun AskForReviewPopup(
                         }
                     }
 
-                    // Select Contact Dropdown
-                    ExposedDropdownMenuBox(
-                        expanded = contactDropdownExpanded,
-                        onExpandedChange = { contactDropdownExpanded = it }
-                    ) {
-                        OutlinedTextField(
-                            value = selectedContact,
-                            onValueChange = { },
-                            readOnly = true,
-                            placeholder = { Text("Select Contact", color = Color(0xFF9CA3AF)) },
-                            trailingIcon = {
-                                Icon(
-                                    Icons.Default.ArrowDropDown,
-                                    contentDescription = null,
-                                    tint = redTheme
-                                )
-                            },
-                            modifier = Modifier
-                                .menuAnchor()
-                                .fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = redTheme,
-                                unfocusedBorderColor = borderGray,
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = Color.White
+                    // Search People Text Field
+                    OutlinedTextField(
+                        value = searchText,
+                        onValueChange = { searchText = it },
+                        placeholder = {
+                            Text(
+                                "Search people",
+                                color = Color(0xFF9CA3AF)
                             )
-                        )
-                        ExposedDropdownMenu(
-                            expanded = contactDropdownExpanded,
-                            onDismissRequest = { contactDropdownExpanded = false }
-                        ) {
-                            contacts.forEach { contact ->
-                                DropdownMenuItem(
-                                    text = { Text(contact) },
-                                    onClick = {
-                                        selectedContact = contact
-                                        contactDropdownExpanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
+                        },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = "Search",
+                                tint = redTheme
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = redTheme,
+                            unfocusedBorderColor = borderGray,
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            focusedTextColor = textGray,
+                            unfocusedTextColor = textGray
+                        ),
+                        shape = RoundedCornerShape(8.dp),
+                        singleLine = true
+                    )
 
                     // Select Business Dropdown
                     ExposedDropdownMenuBox(
@@ -1127,7 +1336,8 @@ fun AskForReviewPopup(
                                 unfocusedBorderColor = borderGray,
                                 focusedContainerColor = Color.White,
                                 unfocusedContainerColor = Color.White
-                            )
+                            ),
+                            shape = RoundedCornerShape(8.dp)
                         )
                         ExposedDropdownMenu(
                             expanded = businessDropdownExpanded,
@@ -1174,8 +1384,8 @@ fun AskForReviewPopup(
                         // Confirm Button
                         Button(
                             onClick = {
-                                if (selectedContact.isNotEmpty() && selectedBusiness.isNotEmpty()) {
-                                    onConfirm(selectedContact, selectedBusiness)
+                                if (searchText.trim().isNotEmpty() && selectedBusiness.isNotEmpty()) {
+                                    onConfirm(searchText.trim(), selectedBusiness)
                                 }
                             },
                             modifier = Modifier
@@ -1185,7 +1395,7 @@ fun AskForReviewPopup(
                                 containerColor = redTheme,
                                 disabledContainerColor = redTheme.copy(alpha = 0.5f)
                             ),
-                            enabled = selectedContact.isNotEmpty() && selectedBusiness.isNotEmpty(),
+                            enabled = searchText.trim().isNotEmpty() && selectedBusiness.isNotEmpty(),
                             shape = RoundedCornerShape(24.dp)
                         ) {
                             Text(

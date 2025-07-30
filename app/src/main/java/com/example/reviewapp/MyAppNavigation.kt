@@ -1,6 +1,5 @@
 package com.example.reviewapp
 
-import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -26,7 +25,7 @@ import com.example.reviewsapp.Screen.QueryScreen.QueryScreen
 fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "HOMESCREEN") {
+    NavHost(navController = navController, startDestination = "ONBOARDINGSCREEN") {
         composable("ONBOARDINGSCREEN") {
             OnboardingScreen(navController)
         }
