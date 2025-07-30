@@ -1,12 +1,12 @@
 package com.example.reviewapp
 
-
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.reviewapp.Screens.MyBusinessScreen
 import com.example.review.Screens.ForgotPasswordScreen
 import com.example.reviewapp.Screens.LoginScreen
 import com.example.reviewapp.Screens.RegisterScreen
@@ -68,6 +68,9 @@ fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel)
         }
         composable("GIVEREVIEW") {
             GiveReview(navController)
+        }
+        composable("MyBusinessScreen") {
+            MyBusinessScreen(navController)
         }
     }
 }
