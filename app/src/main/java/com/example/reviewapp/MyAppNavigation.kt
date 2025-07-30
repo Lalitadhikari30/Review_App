@@ -26,7 +26,7 @@ import com.example.reviewsapp.Screen.QueryScreen.QueryScreen
 fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "HOMESCREEN") {
+    NavHost(navController = navController, startDestination = "ONBOARDINGSCREEN") {
         composable("ONBOARDINGSCREEN") {
             OnboardingScreen(navController)
         }
@@ -70,7 +70,12 @@ fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel)
             GiveReview(navController)
         }
         composable("MyBusinessScreen") {
-            MyBusinessScreen(navController)
+            MyBusinessScreen(navController = navController, highlightedBusinessId = null)
         }
+        composable("MyBusinessScreen/{businessId}") { backStackEntry ->
+            val businessId = backStackEntry.arguments?.getString("businessId")
+            MyBusinessScreen(navController = navController, highlightedBusinessId = businessId)
+        }
+
     }
 }
