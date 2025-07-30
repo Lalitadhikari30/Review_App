@@ -74,11 +74,13 @@ data class Business(
     val reviewCount: Int = 0,
     val description: String = "",
     val verified: Boolean = false,
-    val isOpen: Boolean = true
+    val isOpen: Boolean = true,
+    val imageUrl: String = ""
 )
 
 @Composable
-fun MyBusinessScreen(navController: NavController) {
+fun MyBusinessScreen(navController: NavController,
+                     highlightedBusinessId: String?) {
     val db = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
     val context = LocalContext.current

@@ -69,7 +69,12 @@ fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel)
             GiveReview(navController)
         }
         composable("MyBusinessScreen") {
-            MyBusinessScreen(navController)
+            MyBusinessScreen(navController = navController, highlightedBusinessId = null)
         }
+        composable("MyBusinessScreen/{businessId}") { backStackEntry ->
+            val businessId = backStackEntry.arguments?.getString("businessId")
+            MyBusinessScreen(navController = navController, highlightedBusinessId = businessId)
+        }
+
     }
 }
