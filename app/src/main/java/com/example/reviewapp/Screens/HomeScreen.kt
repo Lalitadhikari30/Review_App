@@ -1,4 +1,3 @@
-
 @file:OptIn(ExperimentalMaterial3Api::class)
 package com.example.reviewapp.Screens
 
@@ -145,7 +144,7 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController, auth
                                     tint = Color.Red
                                 )
                             }
-                            IconButton(onClick = { /* Handle notification click */ }) {
+                            IconButton(onClick = { navController.navigate("NOTIFICATIONSCREEN") }) {
                                 Icon(
                                     Icons.Default.Notifications,
                                     contentDescription = "Notifications",

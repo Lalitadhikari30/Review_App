@@ -10,11 +10,13 @@ import com.example.review.Screens.ForgotPasswordScreen
 import com.example.reviewapp.Screens.LoginScreen
 import com.example.reviewapp.Screens.RegisterScreen
 import com.example.review.Screens.VerifyPasswordScreen
+import com.example.reviewapp.Screens.AboutScreen
 import com.example.reviewapp.Screens.AskForReview
 import com.example.reviewapp.Screens.EditProfileScreen
 import com.example.reviewapp.Screens.GiveReview
 import com.example.reviewapp.Screens.HelpCenterScreen
 import com.example.reviewapp.Screens.HomeScreen
+import com.example.reviewapp.Screens.NotificationScreen
 import com.example.reviewapp.Screens.OnboardingScreen
 import com.example.reviewapp.Screens.ProfileScreen
 import com.example.reviewapp.Screens.SettingsScreen
@@ -54,7 +56,7 @@ fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel)
             HomeScreen(modifier, navController, authViewModel)
         }
         composable("SETTINGSSCREEN") {
-            SettingsScreen()
+            SettingsScreen(navController)
         }
         composable("MYREVIEWSSCREEN") {
             MyReviewsScreen(navController)
@@ -71,10 +73,11 @@ fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel)
         composable("MyBusinessScreen") {
             MyBusinessScreen(navController = navController, highlightedBusinessId = null)
         }
-        composable("MyBusinessScreen/{businessId}") { backStackEntry ->
-            val businessId = backStackEntry.arguments?.getString("businessId")
-            MyBusinessScreen(navController = navController, highlightedBusinessId = businessId)
+        composable("NOTIFICATIONSCREEN") {
+            NotificationScreen(navController)
         }
-
+        composable("ABOUTSCREEN") {
+            AboutScreen(navController)
+        }
     }
 }

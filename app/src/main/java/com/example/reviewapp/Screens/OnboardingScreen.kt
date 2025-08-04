@@ -1,14 +1,14 @@
 package com.example.reviewapp.Screens
 
-
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 data class OnboardingPage(
     val title: String,
@@ -43,8 +44,10 @@ data class OnboardingPage(
     val icon: ImageVector
 )
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun OnboardingScreen(navController: NavController,
+fun OnboardingScreen(
+    navController: NavController,
     onGetStarted: () -> Unit = {}
 ) {
     val pages = listOf(
@@ -65,7 +68,9 @@ fun OnboardingScreen(navController: NavController,
         )
     )
 
-    var currentPage by remember { mutableStateOf(0) }
+    val pagerState = rememberPagerState(pageCount = { pages.size })
+    val coroutineScope = rememberCoroutineScope()
+    val currentPage = pagerState.currentPage
 
     Box(
         modifier = Modifier
@@ -85,62 +90,82 @@ fun OnboardingScreen(navController: NavController,
                 .padding(24.dp)
         ) {
             // Header
-            OnboardingHeader(navController = navController,
+            OnboardingHeader(
+                navController = navController,
                 currentPage = currentPage,
                 totalPages = pages.size,
-                onPrevious = { if (currentPage > 0) currentPage-- },
-                onSkip = { currentPage = pages.size - 1 }
+                onPrevious = {
+                    coroutineScope.launch {
+                        if (currentPage > 0) {
+                            pagerState.animateScrollToPage(currentPage - 1)
+                        }
+                    }
+                },
+                onSkip = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(pages.size - 1)
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Main Content
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                // Illustration
-                OnboardingIllustration(
-                    page = pages[currentPage],
-                    pageIndex = currentPage
-                )
+            // HorizontalPager for swipeable content
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.weight(1f)
+            ) { pageIndex ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    // Illustration
+                    OnboardingIllustration(
+                        page = pages[pageIndex],
+                        pageIndex = pageIndex
+                    )
 
-                Spacer(modifier = Modifier.height(48.dp))
+                    Spacer(modifier = Modifier.height(48.dp))
 
-                // Title
-                Text(
-                    text = pages[currentPage].title,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF424242),
-                    textAlign = TextAlign.Center,
-                    lineHeight = 34.sp
-                )
+                    // Title
+                    Text(
+                        text = pages[pageIndex].title,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF424242),
+                        textAlign = TextAlign.Center,
+                        lineHeight = 34.sp
+                    )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                // Subtitle
-                Text(
-                    text = pages[currentPage].subtitle,
-                    fontSize = 16.sp,
-                    color = Color(0xFF757575),
-                    textAlign = TextAlign.Center,
-                    lineHeight = 24.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-
-                Spacer(modifier = Modifier.height(48.dp))
-
-                // Page Indicators
-                PageIndicators(
-                    currentPage = currentPage,
-                    totalPages = pages.size,
-                    onPageClick = { currentPage = it }
-                )
+                    // Subtitle
+                    Text(
+                        text = pages[pageIndex].subtitle,
+                        fontSize = 16.sp,
+                        color = Color(0xFF757575),
+                        textAlign = TextAlign.Center,
+                        lineHeight = 24.sp,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Page Indicators
+            PageIndicators(
+                currentPage = currentPage,
+                totalPages = pages.size,
+                onPageClick = { pageIndex ->
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(pageIndex)
+                    }
+                }
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -148,7 +173,9 @@ fun OnboardingScreen(navController: NavController,
             Button(
                 onClick = {
                     if (currentPage < pages.size - 1) {
-                        currentPage++
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(currentPage + 1)
+                        }
                     } else {
                         onGetStarted()
                         navController.navigate("LOGIN") //Navigate to Login Screen
@@ -185,7 +212,8 @@ fun OnboardingScreen(navController: NavController,
 }
 
 @Composable
-fun OnboardingHeader(navController: NavController,
+fun OnboardingHeader(
+    navController: NavController,
     currentPage: Int,
     totalPages: Int,
     onPrevious: () -> Unit,
@@ -227,8 +255,10 @@ fun OnboardingHeader(navController: NavController,
                 color = Color(0xFFE53935),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier
-                    .clickable { onSkip()
-                        navController.navigate("LOGIN")}
+                    .clickable {
+                        onSkip()
+                        navController.navigate("LOGIN")
+                    }
                     .padding(8.dp)
             )
         } else {
@@ -236,6 +266,7 @@ fun OnboardingHeader(navController: NavController,
         }
     }
 }
+
 @Composable
 fun OnboardingIllustration(
     page: OnboardingPage,
@@ -243,7 +274,8 @@ fun OnboardingIllustration(
 ) {
     val scale by animateFloatAsState(
         targetValue = 1f,
-        animationSpec = tween(600)
+        animationSpec = tween(600),
+        label = "scale"
     )
 
     Box(
@@ -442,7 +474,8 @@ fun QuickStartIllustration() {
 
     val bounceOffset by animateFloatAsState(
         targetValue = if (bounceState) -10f else 0f,
-        animationSpec = tween(600)
+        animationSpec = tween(600),
+        label = "bounce"
     )
 
     Box(
@@ -546,8 +579,8 @@ fun BottomWaveDecoration() {
             )
     )
 }
-//
-//@Preview(showBackground = true, showSystemUi = true)
+
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun OnboardingScreenPreview() {
     OnboardingScreen(rememberNavController())

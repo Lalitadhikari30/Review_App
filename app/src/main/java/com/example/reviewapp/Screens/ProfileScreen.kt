@@ -318,7 +318,7 @@ fun EnhancedMenuOptionsSection(navController: NavController) {
             EnhancedMenuOption(
                 icon = Icons.Default.Description,
                 title = "About",
-                onClick = { /* Handle Legal navigation */ }
+                onClick = { navController.navigate("ABOUTSCREEN") }
             )
         }
     }
