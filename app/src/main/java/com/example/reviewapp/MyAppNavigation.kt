@@ -11,7 +11,7 @@ import com.example.reviewapp.Screens.LoginScreen
 import com.example.reviewapp.Screens.RegisterScreen
 import com.example.review.Screens.VerifyPasswordScreen
 import com.example.reviewapp.Screens.AboutScreen
-import com.example.reviewapp.Screens.AskForReview
+import com.example.reviewapp.Screens.AskForReviewScreen
 import com.example.reviewapp.Screens.EditProfileScreen
 import com.example.reviewapp.Screens.GiveReview
 import com.example.reviewapp.Screens.HelpCenterScreen
@@ -64,8 +64,8 @@ fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel)
         composable("QUERYSCREEN") {
             QueryScreen()
         }
-        composable("ASKFORREVIEW") {
-            AskForReview(navController)
+        composable("ASKFORREVIEWSCREEN") {
+            AskForReviewScreen(navController = navController)
         }
         composable("GIVEREVIEW") {
             GiveReview(navController)
