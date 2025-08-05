@@ -1,5 +1,3 @@
-
-
 @file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.example.reviewapp.Screens
@@ -24,19 +22,24 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
-@Preview
 @Composable
 fun SettingsScreen(
-    onBackClick: () -> Unit = {},
-    onHelpClick: () -> Unit = {},
-    onSettingClick: (String) -> Unit = {}
+    navController: NavController,
+    onBackClick: () -> Unit = { navController.navigateUp() },
+    onHelpClick: () -> Unit = { navController.navigate("help") },
+    onSignOut: () -> Unit = {}
 ) {
     val redColor = Color(0xFFE53E3E)
     val backgroundColor = Color(0xFFF7FAFC)
     val cardColor = Color.White
     val textPrimary = Color(0xFF2D3748)
     val textSecondary = Color(0xFF718096)
+
+    // State for sign out confirmation dialog
+    var showSignOutDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -92,25 +95,7 @@ fun SettingsScreen(
                             icon = Icons.Default.Person,
                             title = "Profile",
                             subtitle = "Edit your profile information",
-                            onClick = { onSettingClick("profile") }
-//
-//                        SettingsItem(
-//                            icon = Icons.Default.Star,
-//                            title = "My Reviews",
-//                            subtitle = "View and manage your reviews",
-//                            onClick = { onSettingClick("my_reviews") }
-//                        ),
-//                        SettingsItem(
-//                            icon = Icons.Default.Home,
-//                            title = "Add Home Location",
-//                            subtitle = "Set your home address",
-//                            onClick = { onSettingClick("home_location") }
-//                        ),
-//                        SettingsItem(
-//                            icon = Icons.Default.Business,
-//                            title = "Add Work Location",
-//                            subtitle = "Set your work address",
-//                            onClick = { onSettingClick("work_location") }
+                            onClick = { navController.navigate("EDITPROFILESCREEN") }
                         )
                     ),
                     cardColor = cardColor,
@@ -128,14 +113,8 @@ fun SettingsScreen(
                             icon = Icons.Default.Notifications,
                             title = "Notifications",
                             subtitle = "Manage your notification preferences",
-                            onClick = { onSettingClick("notifications") }
-                        ),
-//                        SettingsItem(
-//                            icon = Icons.Default.Security,
-//                            title = "Privacy",
-//                            subtitle = "Control your privacy settings",
-//                            onClick = { onSettingClick("privacy") }
-//                        )
+                            onClick = { navController.navigate("NOTIFICATIONSCREEN") }
+                        )
                     ),
                     cardColor = cardColor,
                     textPrimary = textPrimary,
@@ -148,24 +127,17 @@ fun SettingsScreen(
                 SettingsSection(
                     title = "SUPPORT",
                     items = listOf(
-//                        SettingsItem(
-//                            icon = Icons.Default.Download,
-//                            title = "App Version",
-//                            subtitle = "2.1.4",
-//                            hasArrow = false,
-//                            onClick = { }
-//                        ),
                         SettingsItem(
                             icon = Icons.Default.HelpCenter,
                             title = "Help & Support",
                             subtitle = "Get help and contact support",
-                            onClick = { onSettingClick("help_support") }
+                            onClick = { navController.navigate("HELPCENTERSCREEN") }
                         ),
                         SettingsItem(
                             icon = Icons.Default.Info,
                             title = "About",
                             subtitle = "Learn more about the app",
-                            onClick = { onSettingClick("about") }
+                            onClick = { navController.navigate("ABOUTSCREEN") }
                         )
                     ),
                     cardColor = cardColor,
@@ -174,8 +146,6 @@ fun SettingsScreen(
                 )
             }
 
-
-            // Account Actions Section
             // Account Actions Section
             item {
                 SettingsSection(
@@ -185,15 +155,8 @@ fun SettingsScreen(
                             icon = Icons.Default.Logout,
                             title = "Sign Out",
                             subtitle = "Sign out of your account",
-                            onClick = { onSettingClick("sign_out") }
-                        ),
-//                        SettingsItem(
-//                            icon = Icons.Default.Delete,
-//                            title = "Delete Account",
-//                            subtitle = "Permanently delete your account",
-//                            isDestructive = true,
-//                            onClick = { onSettingClick("delete_account") }
-//                        )
+                            onClick = { showSignOutDialog = true }
+                        )
                     ),
                     cardColor = cardColor,
                     textPrimary = textPrimary,
@@ -202,6 +165,45 @@ fun SettingsScreen(
                 )
             }
         }
+    }
+
+    // Sign Out Confirmation Dialog
+    if (showSignOutDialog) {
+        AlertDialog(
+            onDismissRequest = { showSignOutDialog = false },
+            title = {
+                Text(
+                    text = "Sign Out",
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            text = {
+                Text("Are you sure you want to sign out of your account?")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showSignOutDialog = false
+                        onSignOut()
+                        // Navigate to login screen and clear back stack
+                        navController.navigate("LOGIN") {
+                            popUpTo(navController.graph.startDestinationId) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                ) {
+                    Text("Sign Out", color = redColor)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showSignOutDialog = false }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
 
@@ -239,7 +241,7 @@ fun SettingsSection(
                     )
 
                     if (index < items.size - 1) {
-                        Divider(
+                        HorizontalDivider(
                             color = Color(0xFFE2E8F0),
                             thickness = 0.5.dp,
                             modifier = Modifier.padding(horizontal = 56.dp)
@@ -328,3 +330,12 @@ data class SettingsItem(
     val isDestructive: Boolean = false,
     val onClick: () -> Unit
 )
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsScreenPreview() {
+    SettingsScreen(
+        navController = rememberNavController(),
+        onSignOut = {}
+    )
+}
