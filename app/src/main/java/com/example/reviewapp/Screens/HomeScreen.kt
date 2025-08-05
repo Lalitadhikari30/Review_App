@@ -62,7 +62,6 @@ data class Review(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, navController: NavController, authViewModel : AuthViewModel) {
-    var showAskReviewDialog by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -258,24 +257,11 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController, auth
                     // Handle add business navigation
                 },
                 onShowAskReview = {
-                    showAskReviewDialog = true
                     showBottomSheet = false
                 }
             )
         }
     }
-
-    // Ask for Review Popup
-    AskForReviewPopup(
-        showDialog = showAskReviewDialog,
-        onDismiss = { showAskReviewDialog = false },
-        onConfirm = { contact, business ->
-            // Handle the confirmation logic here
-            showAskReviewDialog = false
-            // You can process the selected contact and business
-            println("Selected: $contact from $business") // For testing
-        }
-    )
 }
 
 @Composable
@@ -318,8 +304,21 @@ fun AddOptionsBottomSheet(
         AddOptionItem(
             icon = Icons.Default.Reviews,
             title = "Ask for Review",
-            subtitle = "Loved it? Let us and others know!",
-            onClick = onShowAskReview
+            subtitle = "Request reviews from your customers",
+//            onClick = {
+//                navController.navigate("ASKFORREVIEWSCREEN")
+//                onDismiss()
+//            }
+            onClick = {
+                println("🔴 Ask for Review clicked - attempting navigation")
+                try {
+                    navController.navigate("ASKFORREVIEWSCREEN")
+                    println("✅ Navigation successful")
+                    onDismiss()
+                } catch (e: Exception) {
+                    println("❌ Navigation failed: ${e.message}")
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -339,203 +338,7 @@ fun AddOptionsBottomSheet(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AskForReviewPopup(
-    showDialog: Boolean,
-    onDismiss: () -> Unit,
-    onConfirm: (contact: String, business: String) -> Unit
-) {
-    if (showDialog) {
-        var selectedContact by remember { mutableStateOf("") }
-        var selectedBusiness by remember { mutableStateOf("") }
-        var businessDropdownExpanded by remember { mutableStateOf(false) }
 
-        val redTheme = Color(0xFFDC2626)
-        val textGray = Color(0xFF374151)
-        val borderGray = Color(0xFFD1D5DB)
-
-//        val contacts = listOf(
-//            "Akash Pasricha", "Akhil Gupta", "Amisha Azad", "Ankur Gupta", "Anurag Lamba",
-//            "Debasish Ghose", "Devanshu", "Gurpal Singh", "Gurvinder Singh Chawla",
-//            "Jitin Kumar Garg", "Kamal Kumar", "Kaushal Daga", "Madan Mohan Chugh", "Manish Narang"
-//        )
-
-        val businesses = listOf(
-            "Business Unit 1", "Business Unit 2", "Business Unit 3", "Business Unit 4"
-        )
-
-//        val filteredContacts = remember(selectedContact) {
-//            contacts.filter { it.contains(selectedContact, ignoreCase = true) }
-//        }
-
-        Dialog(onDismissRequest = onDismiss) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-                    // Header
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Ask for Review",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = textGray
-                        )
-                        IconButton(
-                            onClick = onDismiss,
-                            modifier = Modifier.size(24.dp)
-                        ) {
-                            Icon(
-                                Icons.Default.Close,
-                                contentDescription = "Close",
-                                tint = Color.Gray,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
-
-                    // 🔍 Search Contact Field
-                    Column {
-                        OutlinedTextField(
-                            value = selectedContact,
-                            onValueChange = { selectedContact = it },
-                            placeholder = { Text("Search people", color = Color.Gray) },
-                            modifier = Modifier.fillMaxWidth(),
-                            leadingIcon = {
-                                Icon(Icons.Default.Search, contentDescription = null, tint = redTheme)
-                            },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = redTheme,
-                                unfocusedBorderColor = borderGray,
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = Color.White
-                            )
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(max = 120.dp)
-                        ) {
-//                            items(filteredContacts) { contact ->
-//                                Text(
-//                                    text = contact,
-//                                    modifier = Modifier
-//                                        .fillMaxWidth()
-//                                        .clickable {
-//                                            selectedContact = contact
-//                                        }
-//                                        .padding(vertical = 8.dp, horizontal = 8.dp),
-//                                    fontSize = 14.sp,
-//                                    color = Color.Black
-//                                )
-//                            }
-                        }
-                    }
-
-                    // Business Dropdown
-                    ExposedDropdownMenuBox(
-                        expanded = businessDropdownExpanded,
-                        onExpandedChange = { businessDropdownExpanded = it }
-                    ) {
-                        OutlinedTextField(
-                            value = selectedBusiness,
-                            onValueChange = { },
-                            readOnly = true,
-                            placeholder = { Text("Select Business", color = Color.Gray) },
-                            trailingIcon = {
-                                Icon(
-                                    Icons.Default.ArrowDropDown,
-                                    contentDescription = null,
-                                    tint = redTheme
-                                )
-                            },
-                            modifier = Modifier
-                                .menuAnchor()
-                                .fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = redTheme,
-                                unfocusedBorderColor = borderGray,
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = Color.White
-                            )
-                        )
-                        ExposedDropdownMenu(
-                            expanded = businessDropdownExpanded,
-                            onDismissRequest = { businessDropdownExpanded = false }
-                        ) {
-                            businesses.forEach { business ->
-                                DropdownMenuItem(
-                                    text = { Text(business) },
-                                    onClick = {
-                                        selectedBusiness = business
-                                        businessDropdownExpanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-
-                    // Action Buttons
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        OutlinedButton(
-                            onClick = onDismiss,
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(48.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = redTheme
-                            ),
-                            border = ButtonDefaults.outlinedButtonBorder.copy(
-                                brush = androidx.compose.foundation.BorderStroke(1.dp, redTheme).brush
-                            ),
-                            shape = RoundedCornerShape(24.dp)
-                        ) {
-                            Text("Cancel", fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                        }
-
-                        Button(
-                            onClick = {
-                                if (selectedContact.isNotEmpty() && selectedBusiness.isNotEmpty()) {
-                                    onConfirm(selectedContact, selectedBusiness)
-                                }
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(48.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = redTheme,
-                                disabledContainerColor = redTheme.copy(alpha = 0.5f)
-                            ),
-                            enabled = selectedContact.isNotEmpty() && selectedBusiness.isNotEmpty(),
-                            shape = RoundedCornerShape(24.dp)
-                        ) {
-                            Text("Confirm", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color.White)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun AddOptionItem(
