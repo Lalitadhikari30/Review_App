@@ -65,7 +65,7 @@ fun MyAppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel)
             QueryScreen()
         }
         composable("ASKFORREVIEWSCREEN") {
-            AskForReviewScreen(navController = navController)
+            AskForReviewScreen(navController)
         }
         composable("GIVEREVIEW") {
             GiveReview(navController)
