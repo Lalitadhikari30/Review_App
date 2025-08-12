@@ -324,17 +324,17 @@ fun AddOptionsBottomSheet(
         Spacer(modifier = Modifier.height(12.dp))
 
         // Add Business Option
-        AddOptionItem(
-            icon = Icons.Default.RateReview,
-            title = "Give Reviews",
-            subtitle = "Leave a review in just a minute!",
-            onClick = {
-                navController.navigate("GIVEREVIEW")
-                onDismiss()
-            }
-        )
+//        AddOptionItem(
+//            icon = Icons.Default.RateReview,
+//            title = "Give Reviews",
+//            subtitle = "Leave a review in just a minute!",
+//            onClick = {
+//                navController.navigate("GIVEREVIEW")
+//                onDismiss()
+//            }
+//        )
 
-        Spacer(modifier = Modifier.height(24.dp))
+//        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
