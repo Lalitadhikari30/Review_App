@@ -51,7 +51,7 @@ It allows *business owners* to showcase their services and *users* to send, rece
 
 | Login Screen | Profile Screen | AskForReview Screen | MyBusiness Screen | Notification Screen |
 |--------------|-------------|----------------|----------------|----------------|
-| ![login](app/src/main/res/drawable/loginscreenshot.jpg) | ![home](app/src/main/res/drawable/homescreenshot.jpg) | ![request](app/src/main/res/drawable/request.jpg) | ![business](app/src/main/res/drawable/businessScreenshot.jpg) | ![notification](app/src/main/res/drawable/notificationschreenshot.jpg)
+| ![login](app/src/main/res/drawable/loginscreenshot.jpg) | ![home](app/src/main/res/drawable/profile.jpg) | ![request](app/src/main/res/drawable/request.jpg) | ![business](app/src/main/res/drawable/businessSchreeenshot.jpg) | ![notification](app/src/main/res/drawable/notificationschreenshot.jpg)
 
 ---
 
