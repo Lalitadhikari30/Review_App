@@ -200,7 +200,7 @@ app/
 ## 🛠 Setup & Installation
 1. Clone this repository:
 
-git clone https://github.com/Lalitadhikari30/ReviewApp.git
+git clone https://github.com/Lalitadhikari30/Review_App.git
 
 
 2. Open in Android Studio (Narwhal or newer).
